@@ -8,11 +8,6 @@ const bookSchema = new Schema({
         maxlength: 40,
         unique: true
     },
-    authors: {
-        type: String,
-        required: true,
-        maxlength: 40
-    },
     description: String,
     categories: {
         type: Array,
@@ -32,11 +27,14 @@ const bookSchema = new Schema({
         required: true,
         min: 1
     },
-    publisherId: {
+    image: {
+        type: String,
+        match: /^https?:\/\/.+\/.+$/
+    },
+    authorsIds: [{
         type: Schema.Types.ObjectId,
-        ref: 'Publisher',
-        required: true
-    }
+        ref: 'Author'
+    }]
 });
 
 module.exports = model('Book', bookSchema)

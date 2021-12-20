@@ -1,15 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose')
 const app = express();
+const cors = require('cors')
 
 app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,POST,PUT,DELETE'
+}))
 
 const books = require('./routes/books');
 const addresses = require('./routes/addresses');
-const publishers = require('./routes/publishers');
+const authors = require('./routes/authors');
 app.use('/books', books);
 app.use('/addresses', addresses);
-app.use('/publishers', publishers);
+app.use('/authors', authors);
 
 require('dotenv').config();
 const dbConnData = {

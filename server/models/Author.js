@@ -1,12 +1,15 @@
 const { Schema, model } = require('mongoose');
 
-const publisherModel = new Schema({
+const authorModel = new Schema({
     name: {
         type: String,
         required: true,
         unique: true
     },
-    description: String,
+    birthDate: {
+        type: Date,
+        required: true
+    },
     addressId: {
         type: Schema.Types.ObjectId,
         ref: 'Address',
@@ -14,4 +17,4 @@ const publisherModel = new Schema({
     }
 })
 
-module.exports = model('Publisher', publisherModel)
+module.exports = model('Author', authorModel)

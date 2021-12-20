@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.patch('/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const response = await Address.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
@@ -36,7 +36,7 @@ router.delete('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const response = await Address.findByIdAndDelete(id)
-        res.send(response)
+        response ? res.send(response) : res.status(404).send('Not found')
     } catch (err) {
         res.status(500).send({ error: { message: err.message } })
     }

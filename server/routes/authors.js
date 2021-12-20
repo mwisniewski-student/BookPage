@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
-const Book = require('../models/Book')
+const Author = require('../models/Author')
 
 router.post('/', async (req, res) => {
     try {
-        const book = new Book(req.body);
-        await book.save()
-        const { _id, ...rest } = book._doc
+        const author = new Author(req.body);
+        await author.save()
+        const { _id, ...rest } = author._doc
         res.send({ id: _id, ...rest })
     } catch (err) {
         res.status(500).send({ error: { message: err.message } })
@@ -16,9 +16,9 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        const books = await Book.find();
-        res.send(books.map(book => {
-            const { _id, ...rest } = book._doc
+        const authors = await Author.find();
+        res.send(authors.map(author => {
+            const { _id, ...rest } = author._doc
             return ({ id: _id, ...rest })
         }))
     } catch (err) {
@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const response = await Book.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+        const response = await Author.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
         const { _id, ...rest } = response._doc
         res.send({ id: _id, ...rest })
     } catch (err) {
@@ -40,7 +40,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const response = await Book.findByIdAndDelete(id)
+        const response = await Author.findByIdAndDelete(id)
         response ? res.send(response) : res.status(404).send('Not found')
     } catch (err) {
         res.status(500).send({ error: { message: err.message } })
