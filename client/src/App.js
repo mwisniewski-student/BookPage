@@ -10,16 +10,18 @@ import Footer from './ui/Footer';
 function App() {
   return (
     <BrowserRouter>
-      <PageNavbar />
-      <main className='container mt-5'>
-        <Switch>
-          <Route path="/books" component={BookList} />
-          <Route path="/authors" exact component={AuthorList} />
-          <Route path="/authors/add" component={AuthorAdd} />
-        </Switch>
-      </main>
-      <Footer />
-    </BrowserRouter>
+      <div className="d-flex flex-column vh-100">
+        <PageNavbar />
+        <main className='container mt-5 mb-3'>
+          <Switch>
+            <Route path="/books" component={BookList} />
+            <Route path="/authors" exact component={AuthorList} />
+            <Route path="/authors/add" component={AuthorAdd} />
+          </Switch>
+        </main>
+        <Footer />
+      </div>
+    </BrowserRouter >
   );
 }
 

@@ -2,12 +2,15 @@ import { connect } from "react-redux";
 import { useHistory } from "react-router";
 import AuthorForm from './AuthorForm';
 import { createAuthor } from '../../ducks/authors/operations';
+import { Row, Col } from "react-bootstrap";
 
 const AuthorAdd = ({ createAuthor }) => {
     const history = useHistory()
     const initialValues = {
         name: '',
+        description: "No description",
         birthDate: new Date(),
+        image: '',
         addressCity: ''
     }
 
@@ -16,10 +19,12 @@ const AuthorAdd = ({ createAuthor }) => {
         history.push('/authors')
     };
     return (
-        <div>
-            <p>Dodaj autora</p>
-            <AuthorForm initialValues={initialValues} onSubmit={onSubmit} />
-        </div>
+        <Row>
+            <h1 className="text-center">Dodaj autora</h1>
+            <Col xs={{ span: 6, offset: 3 }} >
+                <AuthorForm initialValues={initialValues} onSubmit={onSubmit} />
+            </Col>
+        </Row>
     )
 }
 
