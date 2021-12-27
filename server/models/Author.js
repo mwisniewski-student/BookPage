@@ -4,7 +4,8 @@ const authorModel = new Schema({
     name: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        maxlength: 40
     },
     birthDate: {
         type: Date,

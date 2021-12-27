@@ -1,7 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const app = express();
-const cors = require('cors')
+const cors = require('cors');
+const ExpressError = require('./utils/ExpressError');
 
 app.use(express.json());
 app.use(cors({
@@ -15,6 +16,16 @@ const authors = require('./routes/authors');
 app.use('/books', books);
 app.use('/addresses', addresses);
 app.use('/authors', authors);
+
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found', 404))
+})
+
+app.use((err, req, res, next) => {
+    const { statusCode = 500 } = err;
+    if (!err.message) err.message = 'Oh No, Something Went Wrong!'
+    res.status(statusCode).send({ err })
+})
 
 require('dotenv').config();
 const dbConnData = {

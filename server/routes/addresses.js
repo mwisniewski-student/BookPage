@@ -1,45 +1,33 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
+const catchAsync = require('../utils/catchAsync')
 
 const Address = require('../models/Address');
 
-router.post('/', async (req, res) => {
-    try {
-        const address = new Address(req.body);
-        const response = await address.save()
-        res.send(response)
-    } catch (err) {
-        res.status(500).send({ error: { message: err.message } })
-    }
-})
+router.post('/', catchAsync(async (req, res) => {
+    const address = new Address(req.body);
+    const response = await address.save()
+    res.send(response)
+}))
 
-router.get('/', async (req, res) => {
-    try {
-        const addresses = await Address.find();
-        res.send(addresses)
-    } catch (err) {
-        res.status(500).send({ error: { message: err.message } })
-    }
-})
+router.get('/', catchAsync(async (req, res) => {
+    const addresses = await Address.find();
+    res.send(addresses.map(address => {
+        const { _id, ...rest } = address._doc
+        return ({ id: _id, ...rest })
+    }))
+}))
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    try {
-        const response = await Address.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
-        res.send(response)
-    } catch (err) {
-        res.status(500).send({ error: { message: err.message } })
-    }
-})
+    const response = await Address.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    res.send(response)
+}))
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    try {
-        const response = await Address.findByIdAndDelete(id)
-        response ? res.send(response) : res.status(404).send('Not found')
-    } catch (err) {
-        res.status(500).send({ error: { message: err.message } })
-    }
-})
+    const response = await Address.findByIdAndDelete(id)
+    response ? res.send(response) : res.status(404).send('Not found')
+}))
 
 module.exports = router
