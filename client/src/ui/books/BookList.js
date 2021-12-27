@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { connect } from "react-redux";
 import { getAllBooks } from "../../ducks/books/selectors";
 import { getBookList } from "../../ducks/books/operations";
-import { Card, Row } from "react-bootstrap";
+import { Card, Row, Image } from "react-bootstrap";
 
 
 const BookList = ({ loading, error, books, getBookList }) => {
@@ -19,7 +19,7 @@ const BookList = ({ loading, error, books, getBookList }) => {
                         <Card className="mb-3">
                             <Row>
                                 <div className="col-md-4">
-                                    <img src={book.image} alt={book.title + " cover"} className="img-fluid" />
+                                    <Image src={book.image} alt={book.title + " cover"} fluid />
                                 </div>
                                 <div className="col-md-8">
                                     <Card.Body>
