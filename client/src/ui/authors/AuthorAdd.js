@@ -9,7 +9,7 @@ const AuthorAdd = ({ createAuthor }) => {
     const initialValues = {
         name: '',
         description: "No description",
-        birthDate: new Date(),
+        birthDate: new Date().toISOString().split('T')[0],
         image: '',
         addressCity: ''
     }
