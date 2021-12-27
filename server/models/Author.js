@@ -7,6 +7,11 @@ const authorModel = new Schema({
         unique: true,
         maxlength: 40
     },
+    description: String,
+    image: {
+        type: String,
+        match: /^https?:\/\/.+\/.+$/
+    },
     birthDate: {
         type: Date,
         required: true
