@@ -54,7 +54,7 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, getAddressList, loadin
                             <Field name="addressCity" list="addressId" className="form-control" id="address" />
                             <Field as="datalist" id="addressId">
                                 {addresses.map(address => (
-                                    <option value={address.city} />
+                                    <option value={address.city} key={address.id} />
                                 ))}
                             </Field>
                             <ErrorMessage className="text-danger" name="addressCity" component="div" />

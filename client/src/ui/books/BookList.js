@@ -16,7 +16,7 @@ const BookList = ({ loading, error, books, getBookList }) => {
             {loading ? <div>loading...</div> :
                 books ? books.map(book => {
                     return (
-                        <Card className="mb-3">
+                        <Card className="mb-3" key={book.id}>
                             <Row>
                                 <div className="col-md-4">
                                     <Image src={book.image} alt={book.title + " cover"} fluid />

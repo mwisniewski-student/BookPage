@@ -22,7 +22,7 @@ const AuthorList = ({ loading, error, authors, getAuthorList, books }) => {
             {loading ? <div>loading...</div> :
                 authors ? authors.map(author => {
                     return (
-                        <Card className="mb-3">
+                        <Card className="mb-3" key={author.id}>
                             <Row>
                                 <div className="col-md-4">
                                     <Image src={author.image} alt={author.name + " photo"} thumbnail />
