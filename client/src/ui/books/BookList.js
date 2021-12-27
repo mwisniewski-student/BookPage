@@ -1,10 +1,11 @@
-
 import { useEffect } from "react";
 import { connect } from "react-redux";
 import { getAllBooks } from "../../ducks/books/selectors";
 import { getBookList } from "../../ducks/books/operations";
+import { Card, Row } from "react-bootstrap";
 
-const UserList = ({ loading, error, books, getBookList }) => {
+
+const BookList = ({ loading, error, books, getBookList }) => {
     useEffect(() => {
         !(books.length) && !error && getBookList();
     }, []);
@@ -15,9 +16,21 @@ const UserList = ({ loading, error, books, getBookList }) => {
             {loading ? <div>loading...</div> :
                 books ? books.map(book => {
                     return (
-                        <div>
-                            {book.title}
-                        </div>)
+                        <Card className="mb-3">
+                            <Row>
+                                <div className="col-md-4">
+                                    <img src={book.image} alt={book.title + " cover"} className="img-fluid" />
+                                </div>
+                                <div className="col-md-8">
+                                    <Card.Body>
+                                        <Card.Title>{book.title}</Card.Title>
+                                        <Card.Text>{book.description}</Card.Text>
+                                        <Card.Text><small className="text-muted">Pages: {book.numberOfPages}</small></Card.Text>
+                                        <Card.Text><small className="text-muted">Published: {new Date(book.publishDate).toLocaleDateString()}</small></Card.Text>
+                                    </Card.Body>
+                                </div>
+                            </Row>
+                        </Card>)
                 }) : null
             }
             {error && <div>{error.message}</div>}
@@ -35,4 +48,4 @@ const mapDispatchToProps = {
     getBookList
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserList);
+export default connect(mapStateToProps, mapDispatchToProps)(BookList);
