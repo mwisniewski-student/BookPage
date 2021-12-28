@@ -19,6 +19,13 @@ router.get('/', catchAsync(async (req, res) => {
     }))
 }))
 
+router.get('/:id', catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const author = await Author.findById(id);
+    const { _id, ...rest } = author._doc
+    res.send({ id: _id, ...rest })
+}))
+
 router.put('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const response = await Author.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })

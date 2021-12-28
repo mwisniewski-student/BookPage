@@ -19,6 +19,22 @@ router.get('/', catchAsync(async (req, res) => {
     }))
 }))
 
+router.get('/:id', catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const book = await Book.findById(id);
+    const { _id, ...rest } = book._doc
+    res.send({ id: _id, ...rest })
+}))
+
+router.get('/by-author/:id', catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const books = await Book.find({ authorsIds: id });
+    res.send(books.map(book => {
+        const { _id, ...rest } = book._doc
+        return ({ id: _id, ...rest })
+    }))
+}))
+
 router.put('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const response = await Book.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
