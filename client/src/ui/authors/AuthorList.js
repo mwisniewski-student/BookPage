@@ -2,14 +2,16 @@ import { useEffect } from "react";
 import { connect } from "react-redux";
 import { getAllAuthors } from "../../ducks/authors/selectors";
 import { getAllBooks } from "../../ducks/books/selectors";
+import { getBookList } from "../../ducks/books/operations";
 import { getAuthorList } from "../../ducks/authors/operations";
 import { Link } from "react-router-dom";
 import { Card, Row, Image } from "react-bootstrap";
 
 
-const AuthorList = ({ loading, error, authors, getAuthorList, books }) => {
+const AuthorList = ({ loading, error, authors, getAuthorList, books, getBookList }) => {
     useEffect(() => {
         !(authors.length) && !error && getAuthorList();
+        books.length === 0 && !error && getBookList();
     }, []);
 
     const getNumberOfBooks = authorId => {
@@ -53,7 +55,8 @@ const mapStateToProps = (state) => {
     };
 }
 const mapDispatchToProps = {
-    getAuthorList
+    getAuthorList,
+    getBookList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthorList);
