@@ -27,12 +27,16 @@ const AuthorDetails = ({ author, address, books, loading,
                                     <Card.Title>{author.name}</Card.Title>
                                     <Card.Text>{author.description || 'No description'}</Card.Text>
                                 </Card.Body>
-                                {address ? (
+                                <ListGroup variant="flush">
+                                    <ListGroup.Item>Birth Date: {new Date(author.birthDate).toLocaleDateString()}</ListGroup.Item>
+                                    <ListGroup.Item className="text-muted">Number of Books: {books ? books.length : 0}</ListGroup.Item>
+                                </ListGroup>
+                                {books ? <Card.Body>
+                                    <Card.Title>Books</Card.Title>
                                     <ListGroup variant="flush">
-                                        <ListGroup.Item>Birth Date: {new Date(author.birthDate).toLocaleDateString()}</ListGroup.Item>
-                                        <ListGroup.Item className="text-muted">Number of Books: {books ? books.length : 0}</ListGroup.Item>
-                                    </ListGroup>) : null}
-                                { }
+                                        {books.length !== 0 ? books.map(book => <ListGroup.Item key={book.id}>{book.title}</ListGroup.Item>) : <div>No books written</div>}
+                                    </ListGroup>
+                                </Card.Body> : null}
                             </Card>
                         </Col>
                     </Row> : <div>No author with given id</div>
