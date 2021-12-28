@@ -1,16 +1,25 @@
-import { Row, Col, Card, ListGroup } from "react-bootstrap";
+import { Row, Col, Card, ListGroup, Button, Modal } from "react-bootstrap";
 import { getAuthorById } from "../../ducks/authors/selectors"
 import { getBooksByAuthor } from "../../ducks/books/selectors";
 import { getAddressById } from "../../ducks/addresses/selectors";
 import { getBookList } from "../../ducks/books/operations";
-import { getAuthorList } from "../../ducks/authors/operations"
+import { getAuthorList, deleteAuthor } from "../../ducks/authors/operations"
 import { connect } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getAddressList } from "../../ducks/addresses/operations";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router";
 
 const AuthorDetails = ({ author, address, books, loading,
-    error, getAddressList, getBookList, getAuthorList }) => {
+    error, getAddressList, getBookList, getAuthorList, deleteAuthor }) => {
+    const [showConfirm, setShowConfirm] = useState(false);
+    const handleClose = () => setShowConfirm(false);
+    const handleShow = () => setShowConfirm(true);
+    const history = useHistory()
+    const handleDelete = author => {
+        deleteAuthor(author);
+        history.push('/authors')
+    }
     useEffect(() => {
         !author && !error && getAuthorList();
         books.length === 0 && !error && getBookList();
@@ -33,7 +42,27 @@ const AuthorDetails = ({ author, address, books, loading,
                                     <ListGroup.Item className="text-muted">Number of Books: {books ? books.length : 0}</ListGroup.Item>
                                 </ListGroup>
                                 <Card.Body>
-                                    <Link to={`/authors/${author.id}/edit`} className="btn btn-info">Edit</Link>
+                                    <Link to={`/authors/${author.id}/edit`} className="btn btn-info">EDIT</Link>
+                                    <Button variant="danger" className="mx-3" onClick={handleShow}>DELETE</Button>
+                                    <Modal
+                                        show={showConfirm}
+                                        onHide={handleClose}
+                                        backdrop="static"
+                                        keyboard={false}
+                                    >
+                                        <Modal.Header closeButton>
+                                            <Modal.Title>DELETE</Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            Are you sure you want to permanently delete this author?
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <Button variant="secondary" onClick={handleClose}>
+                                                Close
+                                            </Button>
+                                            <Button variant="danger" onClick={() => handleDelete(author)}>DELETE</Button>
+                                        </Modal.Footer>
+                                    </Modal>
                                 </Card.Body>
                                 {books ? <Card.Body>
                                     <Card.Title>Books</Card.Title>
@@ -65,7 +94,8 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = {
     getAddressList,
     getBookList,
-    getAuthorList
+    getAuthorList,
+    deleteAuthor
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthorDetails)
