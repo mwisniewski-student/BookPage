@@ -16,7 +16,7 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, getAddressList, loadin
             .max(40, "Author name can contain maximally 40 characters!"),
         birthDate: Yup.date().max(new Date(), "Author must be born now!")
             .required("Birth Date is required!"),
-        image: Yup.string().url("Image must be url"),
+        image: Yup.string().matches(/^https?:\/\/.+\/.+$/, "Image must be url"),
         description: Yup.string(),
         addressCity: Yup.mixed().oneOf(addresses.map(x => x.city), "Address has to be chosen from the list!").required("Address is required!")
     })
