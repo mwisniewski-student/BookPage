@@ -7,6 +7,7 @@ import { getAuthorList } from "../../ducks/authors/operations"
 import { connect } from "react-redux";
 import { useEffect } from "react";
 import { getAddressList } from "../../ducks/addresses/operations";
+import { Link } from "react-router-dom";
 
 const AuthorDetails = ({ author, address, books, loading,
     error, getAddressList, getBookList, getAuthorList }) => {
@@ -31,6 +32,9 @@ const AuthorDetails = ({ author, address, books, loading,
                                     <ListGroup.Item>Birth Date: {new Date(author.birthDate).toLocaleDateString()}</ListGroup.Item>
                                     <ListGroup.Item className="text-muted">Number of Books: {books ? books.length : 0}</ListGroup.Item>
                                 </ListGroup>
+                                <Card.Body>
+                                    <Link to={`/authors/${author.id}/edit`} className="btn btn-info">Edit</Link>
+                                </Card.Body>
                                 {books ? <Card.Body>
                                     <Card.Title>Books</Card.Title>
                                     <ListGroup variant="flush">

@@ -7,6 +7,7 @@ import './App.scss';
 import PageNavbar from './ui/PageNavbar';
 import Footer from './ui/Footer';
 import AuthorDetails from './ui/authors/AuthorDetails';
+import AuthorEdit from './ui/authors/AuthorEdit';
 
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
             <Route path="/books" component={BookList} />
             <Route path="/authors" exact component={AuthorList} />
             <Route path="/authors/add" exact component={AuthorAdd} />
-            <Route path="/authors/:id" component={AuthorDetails} />
+            <Route path="/authors/:id" exact component={AuthorDetails} />
+            <Route path="/authors/:id/edit" component={AuthorEdit} />
           </Switch>
         </main>
         <Footer />
