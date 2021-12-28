@@ -28,3 +28,26 @@ export const getAddressList = () => {
         ]
     })
 }
+
+export const getOneAddress = id => {
+    return createAction({
+        endpoint: `http://localhost:5000/addresses/${id}`,
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        types: [
+            loadingTypes.REQUEST,
+            {
+                type: loadingTypes.SUCCESS,
+                payload: async (_action, _state, res) => {
+                    const json = await res.json();
+                    const { entities } = normalize(json, addressSchema)
+                    return entities;
+                },
+                meta: { actionType: types.GET_ONE }
+            },
+            loadingTypes.FAILURE
+        ]
+    })
+}

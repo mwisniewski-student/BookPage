@@ -45,6 +45,16 @@ const entityReducer = (entity, state = { allIds: [], byId: {} }, action) => {
                 },
                 allIds: state.allIds
             }
+        case types.GET_ONE:
+            return {
+                byId: { ...state.byId, ...actionEntities },
+                allIds: [...state.allIds, ...Object.keys(actionEntities)]
+            }
+        case types.GET_MANY:
+            return {
+                byId: { ...state.byId, ...actionEntities },
+                allIds: [state.allIds, ...Object.keys(actionEntities)]
+            }
         default:
             return state;
     }
@@ -52,8 +62,6 @@ const entityReducer = (entity, state = { allIds: [], byId: {} }, action) => {
 
 export const entities = (state = defaultState, action) => {
     if (!action.meta || !action.meta.actionType) return state;
-
-    console.log(action);
     return {
         ...state,
         ...Object.keys(action.payload).reduce(

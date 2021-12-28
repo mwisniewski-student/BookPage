@@ -29,6 +29,29 @@ export const getAuthorList = () => {
     })
 }
 
+export const getOneAuthor = id => {
+    return createAction({
+        endpoint: `http://localhost:5000/authors/${id}`,
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        types: [
+            loadingTypes.REQUEST,
+            {
+                type: loadingTypes.SUCCESS,
+                payload: async (_action, _state, res) => {
+                    const json = await res.json();
+                    const { entities } = normalize(json, authorSchema)
+                    return entities;
+                },
+                meta: { actionType: types.GET_ONE }
+            },
+            loadingTypes.FAILURE
+        ]
+    })
+}
+
 export const createAuthor = authorToAdd => {
     return createAction({
         endpoint: `http://localhost:5000/authors`,

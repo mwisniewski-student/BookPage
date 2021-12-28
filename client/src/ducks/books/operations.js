@@ -29,6 +29,29 @@ export const getBookList = () => {
     })
 }
 
+export const getBooksByAuthorRequest = id => {
+    return createAction({
+        endpoint: `http://localhost:5000/books/by-author/${id}`,
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        types: [
+            loadingTypes.REQUEST,
+            {
+                type: loadingTypes.SUCCESS,
+                payload: async (_action, _state, res) => {
+                    const json = await res.json();
+                    const { entities } = normalize(json, booksSchema)
+                    return entities;
+                },
+                meta: { actionType: types.GET_MANY }
+            },
+            loadingTypes.FAILURE
+        ]
+    })
+}
+
 export const createBook = bookToAdd => {
     return createAction({
         endpoint: `http://localhost:5000/books`,
