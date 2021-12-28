@@ -25,7 +25,7 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, getAddressList, loadin
         const { addressCity, ...rest } = values
         return {
             ...rest,
-            addressId: addresses.find(x => x.city = addressCity).id
+            addressId: addresses.find(x => x.city === addressCity).id
         }
     }
 
