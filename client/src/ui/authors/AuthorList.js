@@ -33,6 +33,7 @@ const AuthorList = ({ loading, error, authors, getAuthorList, books }) => {
                                         <Card.Text>{author.description}</Card.Text>
                                         <Card.Text><small className="text-muted">Number of books: {getNumberOfBooks(author.id)}</small></Card.Text>
                                         <Card.Text><small className="text-muted">Birth Date: {new Date(author.birthDate).toLocaleDateString()}</small></Card.Text>
+                                        <Link className="btn btn-primary" to={`/authors/${author.id}`}>Details</Link>
                                     </Card.Body>
                                 </div>
                             </Row>
