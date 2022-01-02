@@ -67,7 +67,9 @@ const AuthorDetails = ({ author, address, books, loading,
                                 {books ? <Card.Body>
                                     <Card.Title>Books</Card.Title>
                                     <ListGroup variant="flush">
-                                        {books.length !== 0 ? books.map(book => <ListGroup.Item key={book.id}>{book.title}</ListGroup.Item>) : <div>No books written</div>}
+                                        {books.length !== 0 ? books.map(book => <ListGroup.Item key={book.id}>
+                                            <Link to={`/books/${book.id}`}>{book.title}</Link>
+                                        </ListGroup.Item>) : <div>No books written</div>}
                                     </ListGroup>
                                 </Card.Body> : null}
                             </Card>
