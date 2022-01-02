@@ -8,23 +8,9 @@ import * as Yup from 'yup';
 import { useEffect } from "react";
 import { Form as BootstrapForm, Button } from "react-bootstrap";
 import categories from "./helpers/categories";
-import { components } from "react-select";
 import { default as ReactSelect } from "react-select";
+import SelectOption from "../SelectOption";
 
-const Option = (props) => {
-    return (
-        <div>
-            <components.Option {...props}>
-                <input
-                    type="checkbox"
-                    checked={props.isSelected}
-                    onChange={() => null}
-                />{" "}
-                <label>{props.label}</label>
-            </components.Option>
-        </div>
-    );
-};
 
 const BookForm = ({ initialValues, onSubmit, authors, books,
     getAuthorList, getBookList, loading, error }) => {
@@ -94,7 +80,7 @@ const BookForm = ({ initialValues, onSubmit, authors, books,
                                         isMulti
                                         closeMenuOnSelect={false}
                                         hideSelectedOptions={false}
-                                        components={{ Option }}
+                                        components={{ Option: SelectOption }}
                                         allowSelectAll={true}
                                         onChange={(values) => form.setFieldValue('authorsIds', values)}
                                         value={field.value}
@@ -117,7 +103,7 @@ const BookForm = ({ initialValues, onSubmit, authors, books,
                                         isMulti
                                         closeMenuOnSelect={false}
                                         hideSelectedOptions={false}
-                                        components={{ Option }}
+                                        components={{ Option: SelectOption }}
                                         allowSelectAll={true}
                                         onChange={(values) => form.setFieldValue('categories', values)}
                                         value={field.value}
