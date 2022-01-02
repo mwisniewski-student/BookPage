@@ -2,19 +2,23 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { connect } from "react-redux";
 import { getAllAddresses } from "../../ducks/addresses/selectors";
 import { getAddressList } from "../../ducks/addresses/operations";
+import { getAllAuthors } from "../../ducks/authors/selectors";
+import { getAuthorList } from "../../ducks/authors/operations";
 import * as Yup from 'yup';
 import { useEffect } from "react";
 import { Form as BootstrapForm, Button } from "react-bootstrap";
 import { default as ReactSelect } from "react-select";
 
-const AuthorForm = ({ initialValues, onSubmit, addresses, getAddressList, loading, error }) => {
+const AuthorForm = ({ initialValues, onSubmit, addresses, authors,
+    getAddressList, getAuthorList, loading, error }) => {
     useEffect(() => {
         !(addresses.length) && !error && getAddressList();
+        !(authors.length) && !error && getAuthorList();
     }, []);
 
     const authorSchema = Yup.object().shape({
-        name: Yup.string().required("Author name is required!")
-            .max(40, "Author name can contain maximally 40 characters!"),
+        name: Yup.mixed().required("Author Name is required!").notOneOf(authors.map(author => author.name), "Author Name must be unique")
+            .test('length', "Author name can contain maximally 40 characters!", (value, context) => !value || value.length <= 40),
         birthDate: Yup.date().max(new Date(), "Author must be born now!")
             .required("Birth Date is required!"),
         image: Yup.string().matches(/^https?:\/\/.+\/.+$/, "Image must be url"),
@@ -91,13 +95,15 @@ const mapStateToProps = (state, props) => {
         initialValues,
         onSubmit,
         addresses: getAllAddresses(state),
+        authors: getAllAuthors(state),
         loading: state.loading.loading,
         error: state.loading.error
     }
 }
 
 const mapDispatchToProps = {
-    getAddressList
+    getAddressList,
+    getAuthorList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthorForm)
