@@ -25,7 +25,8 @@ const BookForm = ({ initialValues, onSubmit, authors, books,
     const categoriesOptions = categories.map(category => ({ value: category, label: category }))
 
     const bookSchema = Yup.object().shape({
-        title: Yup.mixed().required("Book title is required!").notOneOf(books.map(book => book.title), "Book title must be unique")
+        title: Yup.mixed().required("Book title is required!")
+            .notOneOf(books.map(book => book.title).filter(title => title !== initialValues.title), "Book title must be unique")
             .test('length', "Author name can contain maximally 40 characters!", (value, context) => !value || value.length <= 40),
         categories: Yup.array().of(Yup.object().shape({
             label: Yup.string().required(),

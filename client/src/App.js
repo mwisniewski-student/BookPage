@@ -19,8 +19,8 @@ function App() {
         <main className='container mt-5 mb-3'>
           <Switch>
             <Route path="/books" exact component={BookList} />
-            <Route path="/books/:id" component={BookDetails} />
             <Route path="/books/add" component={BookAdd} />
+            <Route path="/books/:id" component={BookDetails} />
             <Route path="/authors" exact component={AuthorList} />
             <Route path="/authors/add" exact component={AuthorAdd} />
             <Route path="/authors/:id" exact component={AuthorDetails} />

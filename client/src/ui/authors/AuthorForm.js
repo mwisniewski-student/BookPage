@@ -17,7 +17,8 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, authors,
     }, []);
 
     const authorSchema = Yup.object().shape({
-        name: Yup.mixed().required("Author Name is required!").notOneOf(authors.map(author => author.name), "Author Name must be unique")
+        name: Yup.mixed().required("Author Name is required!")
+            .notOneOf(authors.map(author => author.name).filter(name => name !== initialValues.name), "Author Name must be unique")
             .test('length', "Author name can contain maximally 40 characters!", (value, context) => !value || value.length <= 40),
         birthDate: Yup.date().max(new Date(), "Author must be born now!")
             .required("Birth Date is required!"),
