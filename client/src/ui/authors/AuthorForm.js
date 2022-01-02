@@ -5,6 +5,7 @@ import { getAddressList } from "../../ducks/addresses/operations";
 import * as Yup from 'yup';
 import { useEffect } from "react";
 import { Form as BootstrapForm, Button } from "react-bootstrap";
+import { default as ReactSelect } from "react-select";
 
 const AuthorForm = ({ initialValues, onSubmit, addresses, getAddressList, loading, error }) => {
     useEffect(() => {
@@ -18,15 +19,17 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, getAddressList, loadin
             .required("Birth Date is required!"),
         image: Yup.string().matches(/^https?:\/\/.+\/.+$/, "Image must be url"),
         description: Yup.string(),
-        addressCity: Yup.mixed().oneOf(addresses.map(x => x.city), "Address has to be chosen from the list!").required("Address is required!")
+        addressId: Yup.mixed().nullable()
     })
 
+    const addressOptions = addresses.map(address => ({ label: address.city, value: address.id }))
+
     const mapSubmitValues = values => {
-        const { addressCity, ...rest } = values
-        return {
+        const { addressId, ...rest } = values
+        return addressId ? {
             ...rest,
-            addressId: addresses.find(x => x.city === addressCity).id
-        }
+            addressId: addressId.value
+        } : values
     }
 
     return (
@@ -50,14 +53,19 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, getAddressList, loadin
                             <ErrorMessage className="text-danger" name="birthDate" component="div" />
                         </div>
                         <div className="mb-3">
-                            <BootstrapForm.Label htmlFor="address">Address</BootstrapForm.Label>
-                            <Field name="addressCity" list="addressId" className="form-control" id="address" />
-                            <Field as="datalist" id="addressId">
-                                {addresses.map(address => (
-                                    <option value={address.city} key={address.id} />
-                                ))}
+                            <BootstrapForm.Label htmlFor="addressId">Address</BootstrapForm.Label>
+                            <Field name="addressId" className="form-control" id="addressId">
+                                {({ field, form, meta }) => (
+                                    <ReactSelect
+                                        options={addressOptions}
+                                        closeMenuOnSelect={false}
+                                        onChange={(value) => form.setFieldValue('addressId', value)}
+                                        value={field.value}
+                                        isClearable={true}
+                                    />
+                                )}
                             </Field>
-                            <ErrorMessage className="text-danger" name="addressCity" component="div" />
+                            <ErrorMessage className="text-danger" name="addressId" component="div" />
                         </div>
                         <div className="mb-3">
                             <BootstrapForm.Label htmlFor="description">Description</BootstrapForm.Label>

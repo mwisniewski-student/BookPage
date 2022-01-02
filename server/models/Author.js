@@ -18,8 +18,7 @@ const authorModel = new Schema({
     },
     addressId: {
         type: Schema.Types.ObjectId,
-        ref: 'Address',
-        required: true
+        ref: 'Address'
     }
 })
 

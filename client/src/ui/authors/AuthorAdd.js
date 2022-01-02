@@ -11,7 +11,6 @@ const AuthorAdd = ({ createAuthor }) => {
         description: "No description",
         birthDate: new Date().toISOString().split('T')[0],
         image: '',
-        addressCity: ''
     }
 
     const onSubmit = (author) => {

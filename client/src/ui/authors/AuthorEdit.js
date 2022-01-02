@@ -9,28 +9,22 @@ import { useEffect } from "react";
 import { getAuthorList } from "../../ducks/authors/operations";
 import { getAddressList } from "../../ducks/addresses/operations";
 
-const AuthorEdit = ({ updateAuthor, author, addressCity, getAuthorList, getAddressList, loading, error }) => {
+const AuthorEdit = ({ updateAuthor, author, address, getAuthorList, getAddressList, loading, error }) => {
     const history = useHistory()
     useEffect(() => {
         !author && !error && getAuthorList();
-        !addressCity && !error && getAddressList();
+        !address && !error && getAddressList();
     }, []);
     const onSubmit = (author) => {
         updateAuthor(author)
         history.push('/authors')
     };
     const mapToInitialValues = (author) => {
-        return author ? {
-            ...author,
-            birthDate: author.birthDate.split('T')[0],
-            addressCity
-        } : {
-            name: '',
-            description: "No description",
-            birthDate: new Date().toISOString().split('T')[0],
-            image: '',
-            addressCity: ''
-        }
+        const data = { ...author, birthDate: author.birthDate.split('T')[0] }
+        return address ? {
+            ...data,
+            addressId: { value: address.id, label: address.city }
+        } : data
     }
     return (
         <>
@@ -53,7 +47,7 @@ const mapStateToProps = (state, props) => {
     const address = author ? getAddressById(state, author.addressId) : {}
     return {
         author,
-        addressCity: address ? address.city : '',
+        address,
         loading: state.loading.loading,
         error: state.loading.error
     }
