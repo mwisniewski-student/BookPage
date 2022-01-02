@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { getAllBooks } from "../../ducks/books/selectors";
 import { getBookList } from "../../ducks/books/operations";
 import { Card, Row, Image } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 
 const BookList = ({ loading, error, books, getBookList }) => {
@@ -12,6 +13,7 @@ const BookList = ({ loading, error, books, getBookList }) => {
 
     return (
         <div>
+            <Link to="/books/add">Add book</Link>
             <h3>Book list</h3>
             {loading ? <div>loading...</div> :
                 books ? books.map(book => {
