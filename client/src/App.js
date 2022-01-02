@@ -8,6 +8,7 @@ import PageNavbar from './ui/PageNavbar';
 import Footer from './ui/Footer';
 import AuthorDetails from './ui/authors/AuthorDetails';
 import AuthorEdit from './ui/authors/AuthorEdit';
+import BookDetails from './ui/books/BookDetails';
 import BookAdd from './ui/books/BookAdd';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <main className='container mt-5 mb-3'>
           <Switch>
             <Route path="/books" exact component={BookList} />
+            <Route path="/books/:id" component={BookDetails} />
             <Route path="/books/add" component={BookAdd} />
             <Route path="/authors" exact component={AuthorList} />
             <Route path="/authors/add" exact component={AuthorAdd} />

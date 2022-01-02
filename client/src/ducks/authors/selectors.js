@@ -7,3 +7,7 @@ export const getAllAuthors = state => {
 export const getAuthorById = (state, id) => {
     return _.values(_.pickBy(state.entities.authors.byId, author => author.id === id))[0]
 }
+
+export const getAuthorsByIds = (state, ids) => {
+    return _.values(_.pickBy(state.entities.authors.byId, author => ids.includes(author.id)))
+}

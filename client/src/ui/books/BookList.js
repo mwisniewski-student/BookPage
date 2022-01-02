@@ -29,6 +29,7 @@ const BookList = ({ loading, error, books, getBookList }) => {
                                         <Card.Text>{book.description}</Card.Text>
                                         <Card.Text><small className="text-muted">Pages: {book.numberOfPages}</small></Card.Text>
                                         <Card.Text><small className="text-muted">Published: {new Date(book.publishDate).toLocaleDateString()}</small></Card.Text>
+                                        <Link className="btn btn-primary" to={`/books/${book.id}`}>Details</Link>
                                     </Card.Body>
                                 </div>
                             </Row>
