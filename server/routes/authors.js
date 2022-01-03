@@ -3,6 +3,7 @@ const catchAsync = require('../utils/catchAsync')
 const router = express.Router({ mergeParams: true });
 
 const Author = require('../models/Author')
+const Book = require('../models/Book')
 
 router.post('/', catchAsync(async (req, res) => {
     const author = new Author(req.body);
@@ -35,8 +36,14 @@ router.put('/:id', catchAsync(async (req, res) => {
 
 router.delete('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const response = await Author.findByIdAndDelete(id)
-    response ? res.send(response) : res.status(404).send('Not found')
+    const authorDeleted = await Author.findByIdAndDelete(id)
+    if (authorDeleted) {
+        await Book.deleteMany({
+            authorsIds: authorDeleted._id
+        })
+        return res.send(authorDeleted)
+    }
+    return res.status(404).send('Not found')
 }))
 
 module.exports = router

@@ -42,8 +42,8 @@ const AuthorDetails = ({ author, address, books, loading,
                                     <ListGroup.Item className="text-muted">Number of Books: {books ? books.length : 0}</ListGroup.Item>
                                 </ListGroup>
                                 <Card.Body>
-                                    <Link to={`/authors/${author.id}/edit`} className="btn btn-info">EDIT</Link>
-                                    <Button variant="danger" className="mx-3" onClick={handleShow}>DELETE</Button>
+                                    <Link to={`/authors/${author.id}/edit`} className="btn btn-info">Edit</Link>
+                                    <Button variant="danger" className="mx-3" onClick={handleShow}>Delete</Button>
                                     <Modal
                                         show={showConfirm}
                                         onHide={handleClose}
@@ -51,16 +51,16 @@ const AuthorDetails = ({ author, address, books, loading,
                                         keyboard={false}
                                     >
                                         <Modal.Header closeButton>
-                                            <Modal.Title>DELETE</Modal.Title>
+                                            <Modal.Title>Delete</Modal.Title>
                                         </Modal.Header>
                                         <Modal.Body>
-                                            Are you sure you want to permanently delete this author?
+                                            Are you sure you want to permanently delete this author and all of his books?
                                         </Modal.Body>
                                         <Modal.Footer>
                                             <Button variant="secondary" onClick={handleClose}>
                                                 Close
                                             </Button>
-                                            <Button variant="danger" onClick={() => handleDelete(author)}>DELETE</Button>
+                                            <Button variant="danger" onClick={() => handleDelete(author)}>Delete</Button>
                                         </Modal.Footer>
                                     </Modal>
                                 </Card.Body>

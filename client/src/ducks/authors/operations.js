@@ -2,9 +2,12 @@ import { createAction } from "redux-api-middleware";
 import { schema, normalize } from 'normalizr';
 import types from "../entities/types";
 import loadingTypes from "../loading/types";
+import { getBooksByAuthor } from '../books/selectors'
 
 const authorSchema = new schema.Entity('authors');
 const authorsSchema = new schema.Array(authorSchema);
+const bookSchema = new schema.Entity('books');
+const booksSchema = new schema.Array(bookSchema)
 
 export const getAuthorList = () => {
     return createAction({
@@ -88,8 +91,9 @@ export const deleteAuthor = authorToDelete => {
             {
                 type: loadingTypes.SUCCESS,
                 payload: async (action, state, res) => {
-                    const { entities } = normalize(authorToDelete, authorSchema);
-                    return entities;
+                    const bookEntities = normalize(getBooksByAuthor(state, authorToDelete.id), booksSchema).entities
+                    const authorEntity = normalize(authorToDelete, authorSchema).entities;
+                    return { ...bookEntities, ...authorEntity };
                 },
                 meta: { actionType: types.DELETE }
             },

@@ -123,7 +123,7 @@ const BookForm = ({ initialValues, onSubmit, authors, books,
                             <Field name="image" className="form-control" id="image" />
                             <ErrorMessage className="text-danger" name="image" component="div" />
                         </div>
-                        <Button variant="success" type="submit">Add</Button>
+                        <Button variant="success" type="submit">Submit</Button>
                     </Form>
                 </Formik>}
         </div>

@@ -47,8 +47,8 @@ const BookDetails = ({ book, authors, loading,
                                     <ListGroup.Item className="text-muted">Number of Pages: {book.numberOfPages}</ListGroup.Item>
                                 </ListGroup>
                                 <Card.Body>
-                                    {/* <Link to={`/authors/${author.id}/edit`} className="btn btn-info">EDIT</Link> */}
-                                    <Button variant="danger" className="mx-3" onClick={handleShow}>DELETE</Button>
+                                    <Link to={`/books/${book.id}/edit`} className="btn btn-info">Edit</Link>
+                                    <Button variant="danger" className="mx-3" onClick={handleShow}>Delete</Button>
                                     <Modal
                                         show={showConfirm}
                                         onHide={handleClose}
@@ -56,7 +56,7 @@ const BookDetails = ({ book, authors, loading,
                                         keyboard={false}
                                     >
                                         <Modal.Header closeButton>
-                                            <Modal.Title>DELETE</Modal.Title>
+                                            <Modal.Title>Delete</Modal.Title>
                                         </Modal.Header>
                                         <Modal.Body>
                                             Are you sure you want to permanently delete this book?
@@ -65,7 +65,7 @@ const BookDetails = ({ book, authors, loading,
                                             <Button variant="secondary" onClick={handleClose}>
                                                 Close
                                             </Button>
-                                            <Button variant="danger" onClick={() => handleDelete(book)}>DELETE</Button>
+                                            <Button variant="danger" onClick={() => handleDelete(book)}>Delete</Button>
                                         </Modal.Footer>
                                     </Modal>
                                 </Card.Body>
