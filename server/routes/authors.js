@@ -3,7 +3,8 @@ const catchAsync = require('../utils/catchAsync')
 const router = express.Router({ mergeParams: true });
 
 const Author = require('../models/Author')
-const Book = require('../models/Book')
+const Book = require('../models/Book');
+const ExpressError = require('../utils/ExpressError');
 
 router.post('/', catchAsync(async (req, res) => {
     const author = new Author(req.body);
@@ -20,9 +21,23 @@ router.get('/', catchAsync(async (req, res) => {
     }))
 }))
 
+router.get('/byIds', catchAsync(async (req, res) => {
+    const { authorsIds } = req.body
+    const authors = await Author.find().where('_id').in(authorsIds);
+    if (!authors.length) { throw new ExpressError('No authors found', 404) }
+    res.send(authors.map(author => {
+        const { _id, ...rest } = author._doc
+        return ({ id: _id, ...rest })
+    }))
+}))
+
 router.get('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
+    if (typeof id !== 'string' || id.length !== 24) {
+        throw new ExpressError('Wrong id given', 404)
+    }
     const author = await Author.findById(id);
+    if (!author) { throw new ExpressError('Author not found', 404) }
     const { _id, ...rest } = author._doc
     res.send({ id: _id, ...rest })
 }))
@@ -43,7 +58,7 @@ router.delete('/:id', catchAsync(async (req, res) => {
         })
         return res.send(authorDeleted)
     }
-    return res.status(404).send('Not found')
+    throw new ExpressError('Author doesn\'t exist', 404)
 }))
 
 module.exports = router

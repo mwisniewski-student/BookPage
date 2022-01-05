@@ -2,16 +2,16 @@ import { Row, Col, Card, ListGroup, Button, Modal } from "react-bootstrap";
 import { getAuthorById } from "../../ducks/authors/selectors"
 import { getBooksByAuthor } from "../../ducks/books/selectors";
 import { getAddressById } from "../../ducks/addresses/selectors";
-import { getBookList } from "../../ducks/books/operations";
-import { getAuthorList, deleteAuthor } from "../../ducks/authors/operations"
+import { getBooksByAuthorRequest } from "../../ducks/books/operations";
+import { getOneAuthor, deleteAuthor } from "../../ducks/authors/operations"
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
-import { getAddressList } from "../../ducks/addresses/operations";
+import { getOneAddress } from "../../ducks/addresses/operations";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 
-const AuthorDetails = ({ author, address, books, loading,
-    error, getAddressList, getBookList, getAuthorList, deleteAuthor }) => {
+const AuthorDetails = ({ author, address, books, id,
+    getOneAuthor, getOneAddress, getBooksByAuthorRequest, deleteAuthor }) => {
     const [showConfirm, setShowConfirm] = useState(false);
     const handleClose = () => setShowConfirm(false);
     const handleShow = () => setShowConfirm(true);
@@ -21,13 +21,14 @@ const AuthorDetails = ({ author, address, books, loading,
         history.push('/authors')
     }
     useEffect(() => {
-        !author && !error && getAuthorList();
-        books.length === 0 && !error && getBookList();
-        !address && !error && getAddressList();
-    }, []);
+        !author && getOneAuthor(id);
+        !books && getBooksByAuthorRequest(id);
+        !address && author && author.addressId && getOneAddress(author.addressId);
+    }, [author, address, books]);
+
     return (
         <>
-            {loading ? <div> loading...</div > :
+            {
                 author ?
                     <Row>
                         <Col md={{ span: 6, offset: 3 }}>
@@ -74,7 +75,7 @@ const AuthorDetails = ({ author, address, books, loading,
                                 </Card.Body> : null}
                             </Card>
                         </Col>
-                    </Row> : <div>No author with given id</div>
+                    </Row> : null
             }
         </>
     )
@@ -87,16 +88,14 @@ const mapStateToProps = (state, props) => {
         author,
         books: getBooksByAuthor(state, id),
         address: author ? getAddressById(state, author.addressId) : null,
-        loading: state.loading.loading,
-        error: state.loading.error,
         id
     }
 }
 
 const mapDispatchToProps = {
-    getAddressList,
-    getBookList,
-    getAuthorList,
+    getOneAuthor,
+    getOneAddress,
+    getBooksByAuthorRequest,
     deleteAuthor
 }
 

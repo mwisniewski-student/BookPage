@@ -10,16 +10,16 @@ import { Form as BootstrapForm, Button } from "react-bootstrap";
 import categories from "./helpers/categories";
 import { default as ReactSelect } from "react-select";
 import SelectOption from "../SelectOption";
+import { setBookRequestStatus, setAuthorRequestStatus } from "../../ducks/requestsStatus/actions";
 
 
-const BookForm = ({ initialValues, onSubmit, authors, books,
-    getAuthorList, getBookList, loading, error }) => {
+const BookForm = ({ initialValues, onSubmit, authors, books, authorRequestStatus, bookRequestStatus,
+    getAuthorList, getBookList, setBookRequestStatus, setAuthorRequestStatus }) => {
 
     useEffect(() => {
-        !(authors.length) && !error && getAuthorList();
-        !(books.length) && !error && getBookList();
-    }, []);
-
+        !authorRequestStatus && getAuthorList() && setAuthorRequestStatus(true);
+        !bookRequestStatus && getBookList() && setBookRequestStatus(true);
+    }, [authors, books]);
 
     const authorsOptions = authors.map(author => ({ value: author.id, label: author.name }))
     const categoriesOptions = categories.map(category => ({ value: category, label: category }))
@@ -39,7 +39,9 @@ const BookForm = ({ initialValues, onSubmit, authors, books,
         description: Yup.string(),
         authorsIds: Yup.array().of(Yup.object().shape({
             label: Yup.string().required(),
-            value: Yup.mixed().oneOf(authors.map(author => author.id), "Authors must be chosen from the list!").required()
+            value: Yup.mixed().oneOf(authors.map(author => {
+                return author.id
+            }), "Authors must be chosen from the list!").required()
         })).min(1, "At least one author must be chosen")
     })
 
@@ -54,7 +56,7 @@ const BookForm = ({ initialValues, onSubmit, authors, books,
 
     return (
         <div>
-            {loading ? <div>loading...</div> :
+            {
                 <Formik
                     initialValues={initialValues}
                     enableReinitilise={true}
@@ -138,14 +140,16 @@ const mapStateToProps = (state, props) => {
         onSubmit,
         authors: getAllAuthors(state),
         books: getAllBooks(state),
-        loading: state.loading.loading,
-        error: state.loading.error
+        authorRequestStatus: state.requestsStatus.hasAuthorRequestHappend,
+        bookRequestStatus: state.requestsStatus.hasBookRequestHappend
     }
 }
 
 const mapDispatchToProps = {
     getAuthorList,
-    getBookList
+    getBookList,
+    setBookRequestStatus,
+    setAuthorRequestStatus
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookForm)

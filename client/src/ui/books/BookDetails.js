@@ -1,32 +1,37 @@
 import { Row, Col, Card, ListGroup, Button, Modal } from "react-bootstrap";
 import { getBookById } from "../../ducks/books/selectors"
 import { getAuthorsByIds } from "../../ducks/authors/selectors";
-import { getAuthorList } from "../../ducks/authors/operations";
-import { getBookList, deleteBook } from "../../ducks/books/operations"
+import { getOneBook, deleteBook, getBooksAuthors } from "../../ducks/books/operations"
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 
-const BookDetails = ({ book, authors, loading,
-    error, getAuthorList, getBookList, deleteBook }) => {
+const BookDetails = ({ book, authors, getBooksAuthors, id,
+    getOneBook, deleteBook }) => {
     const [showConfirm, setShowConfirm] = useState(false);
     const handleClose = () => setShowConfirm(false);
     const handleShow = () => setShowConfirm(true);
     const history = useHistory()
+
     const handleDelete = book => {
         deleteBook(book);
         history.push('/books')
     }
 
     useEffect(() => {
-        !book && !error && getBookList();
-        authors.length === 0 && !error && getAuthorList();
-    }, []);
+        if (!book) {
+            getOneBook(id)
+            if (!authors.length) {
+                getBooksAuthors(id)
+            }
+        }
+        // !authors.length && book && getBooksAuthors(id);
+    }, [book, authors]);
 
     return (
         <>
-            {loading ? <div> loading...</div > :
+            {
                 book ?
                     <Row>
                         <Col md={{ span: 6, offset: 3 }}>
@@ -79,7 +84,7 @@ const BookDetails = ({ book, authors, loading,
                                 </Card.Body> : null}
                             </Card>
                         </Col>
-                    </Row> : <div>No book with given id</div>
+                    </Row> : null
             }
         </>
     )
@@ -91,15 +96,13 @@ const mapStateToProps = (state, props) => {
     return {
         book,
         authors: book ? getAuthorsByIds(state, book.authorsIds) : [],
-        loading: state.loading.loading,
-        error: state.loading.error,
         id
     }
 }
 
 const mapDispatchToProps = {
-    getAuthorList,
-    getBookList,
+    getOneBook,
+    getBooksAuthors,
     deleteBook
 }
 

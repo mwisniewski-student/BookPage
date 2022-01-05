@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
 
 export const getAllAuthors = state => {
-    return state.entities.authors.allIds.map(id => state.entities.authors.byId[id]);
+    const result = state.entities.authors.allIds.map(id => state.entities.authors.byId[id])
+    return result;
 }
 
 export const getAuthorById = (state, id) => {

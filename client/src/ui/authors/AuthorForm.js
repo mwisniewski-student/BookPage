@@ -8,13 +8,15 @@ import * as Yup from 'yup';
 import { useEffect } from "react";
 import { Form as BootstrapForm, Button } from "react-bootstrap";
 import { default as ReactSelect } from "react-select";
+import { setAddressRequestStatus, setAuthorRequestStatus } from "../../ducks/requestsStatus/actions";
 
-const AuthorForm = ({ initialValues, onSubmit, addresses, authors,
-    getAddressList, getAuthorList, loading, error }) => {
+const AuthorForm = ({ initialValues, onSubmit, addresses, authors, authorRequestStatus, addressRequestStatus,
+    getAddressList, getAuthorList, setAddressRequestStatus, setAuthorRequestStatus }) => {
+
     useEffect(() => {
-        !(addresses.length) && !error && getAddressList();
-        !(authors.length) && !error && getAuthorList();
-    }, []);
+        !authorRequestStatus && getAuthorList() && setAuthorRequestStatus(true);
+        !addressRequestStatus && getAddressList() && setAddressRequestStatus(true);
+    }, [addresses, authors]);
 
     const authorSchema = Yup.object().shape({
         name: Yup.mixed().required("Author Name is required!")
@@ -39,7 +41,7 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, authors,
 
     return (
         <div>
-            {loading ? <div>loading...</div> :
+            {
                 <Formik
                     initialValues={initialValues}
                     enableReinitilise={true}
@@ -97,14 +99,16 @@ const mapStateToProps = (state, props) => {
         onSubmit,
         addresses: getAllAddresses(state),
         authors: getAllAuthors(state),
-        loading: state.loading.loading,
-        error: state.loading.error
+        authorRequestStatus: state.requestsStatus.hasAuthorRequestHappend,
+        addressRequestStatus: state.requestsStatus.hasAddressRequestHappend
     }
 }
 
 const mapDispatchToProps = {
     getAddressList,
-    getAuthorList
+    getAuthorList,
+    setAddressRequestStatus,
+    setAuthorRequestStatus
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthorForm)

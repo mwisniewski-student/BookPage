@@ -4,12 +4,13 @@ import { getAllBooks } from "../../ducks/books/selectors";
 import { getBookList } from "../../ducks/books/operations";
 import { Card, Row, Image, DropdownButton, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { setBookRequestStatus } from "../../ducks/requestsStatus/actions";
 
 
-const BookList = ({ loading, error, books, getBookList }) => {
+const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus }) => {
     useEffect(() => {
-        !(books.length) && !error && getBookList();
-    }, []);
+        !bookRequestStatus && getBookList() && setBookRequestStatus(true);
+    }, [books]);
 
     const [displayedBooks, setDisplayedBooks] = useState([])
     const [sortedOption, setSortedOption] = useState('')
@@ -51,7 +52,7 @@ const BookList = ({ loading, error, books, getBookList }) => {
         <div>
             <Link to="/books/add">Add book</Link>
             <h3>Book list</h3>
-            <DropdownButton variant="secondary" title={`Sortuj: ${sortedOption}`} className="mb-3">
+            <DropdownButton variant="secondary" title={`Sort: ${sortedOption}`} className="mb-3">
                 <Dropdown.Item onClick={sortByNumberOfPages}>Number of pages</Dropdown.Item>
                 <Dropdown.Item onClick={sortByNumberOfPagesAscending}>Number of pages(Ascending)</Dropdown.Item>
                 <Dropdown.Item onClick={sortAlphabetically}>Alphabetically</Dropdown.Item>
@@ -59,7 +60,7 @@ const BookList = ({ loading, error, books, getBookList }) => {
                 <Dropdown.Item onClick={sortByPublishDate}>By Oldest</Dropdown.Item>
                 <Dropdown.Item onClick={sortByPublishDateReverse}>By Youngest</Dropdown.Item>
             </DropdownButton>
-            {loading ? <div>loading...</div> :
+            {
                 displayedBooks ? displayedBooks.map(book => {
                     return (
                         <Card className="mb-3" key={book.id}>
@@ -80,19 +81,18 @@ const BookList = ({ loading, error, books, getBookList }) => {
                         </Card>)
                 }) : null
             }
-            {error && <div>{error.message}</div>}
         </div >
     )
 };
 const mapStateToProps = (state) => {
     return {
         books: getAllBooks(state),
-        loading: state.loading.loading,
-        error: state.loading.error
+        bookRequestStatus: state.requestsStatus.hasBookRequestHappend
     };
 }
 const mapDispatchToProps = {
-    getBookList
+    getBookList,
+    setBookRequestStatus
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookList);

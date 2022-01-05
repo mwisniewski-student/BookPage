@@ -32,6 +32,7 @@ export const getAuthorList = () => {
     })
 }
 
+
 export const getOneAuthor = id => {
     return createAction({
         endpoint: `http://localhost:5000/authors/${id}`,

@@ -11,28 +11,39 @@ import AuthorEdit from './ui/authors/AuthorEdit';
 import BookDetails from './ui/books/BookDetails';
 import BookEdit from './ui/books/BookEdit';
 import BookAdd from './ui/books/BookAdd';
+import { connect } from 'react-redux';
+import Error from './ui/Error';
+import Loader from './ui/Loader';
 
-function App() {
+function App({ error, loading }) {
+
   return (
     <BrowserRouter>
       <div className="d-flex flex-column vh-100">
         <PageNavbar />
-        <main className='container mt-5 mb-3'>
-          <Switch>
-            <Route path="/books" exact component={BookList} />
-            <Route path="/books/add" component={BookAdd} />
-            <Route path="/books/:id" exact component={BookDetails} />
-            <Route path="/books/:id/edit" component={BookEdit} />
-            <Route path="/authors" exact component={AuthorList} />
-            <Route path="/authors/add" exact component={AuthorAdd} />
-            <Route path="/authors/:id" exact component={AuthorDetails} />
-            <Route path="/authors/:id/edit" component={AuthorEdit} />
-          </Switch>
-        </main>
+        {error ? <Error error={error} /> :
+          loading ? <Loader /> :
+            <main className='container mt-5 mb-3'>
+              <Switch>
+                <Route path="/books" exact component={BookList} />
+                <Route path="/books/add" component={BookAdd} />
+                <Route path="/books/:id" exact component={BookDetails} />
+                <Route path="/books/:id/edit" component={BookEdit} />
+                <Route path="/authors" exact component={AuthorList} />
+                <Route path="/authors/add" exact component={AuthorAdd} />
+                <Route path="/authors/:id" exact component={AuthorDetails} />
+                <Route path="/authors/:id/edit" component={AuthorEdit} />
+              </Switch>
+            </main>}
+
         <Footer />
       </div>
     </BrowserRouter >
   );
 }
 
-export default App;
+const mapStateToProps = state => ({
+  error: state.loading.error,
+  loading: state.loading.loading
+})
+export default connect(mapStateToProps, undefined)(App);

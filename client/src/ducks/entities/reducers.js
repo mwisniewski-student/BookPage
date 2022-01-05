@@ -53,7 +53,7 @@ const entityReducer = (entity, state = { allIds: [], byId: {} }, action) => {
         case types.GET_MANY:
             return {
                 byId: { ...state.byId, ...actionEntities },
-                allIds: [state.allIds, ...Object.keys(actionEntities)]
+                allIds: _.uniq([...state.allIds, ...Object.keys(actionEntities)])
             }
         default:
             return state;

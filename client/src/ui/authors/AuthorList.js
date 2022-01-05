@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { connect } from "react-redux";
 import { getAllAuthors } from "../../ducks/authors/selectors";
 import { getAllBooks } from "../../ducks/books/selectors";
@@ -6,13 +6,16 @@ import { getBookList } from "../../ducks/books/operations";
 import { getAuthorList } from "../../ducks/authors/operations";
 import { Link } from "react-router-dom";
 import { Card, Row, Image, DropdownButton, Dropdown } from "react-bootstrap";
+import { setBookRequestStatus, setAuthorRequestStatus } from "../../ducks/requestsStatus/actions";
 
 
-const AuthorList = ({ loading, error, authors, getAuthorList, books, getBookList }) => {
+const AuthorList = ({ authors, getAuthorList, books, getBookList,
+    authorRequestStatus, bookRequestStatus, setBookRequestStatus, setAuthorRequestStatus }) => {
+
     useEffect(() => {
-        !(authors.length) && !error && getAuthorList();
-        books.length === 0 && !error && getBookList();
-    }, []);
+        !authorRequestStatus && getAuthorList() && setAuthorRequestStatus(true);
+        !bookRequestStatus && getBookList() && setBookRequestStatus(true)
+    }, [books, authors]);
 
     const getNumberOfBooks = authorId => {
         return books.filter(book => book.authorsIds.includes(authorId)).length
@@ -58,7 +61,7 @@ const AuthorList = ({ loading, error, authors, getAuthorList, books, getBookList
         <div>
             <Link to="/authors/add">Add author</Link>
             <h3>Author list</h3>
-            <DropdownButton variant="secondary" title={`Sortuj: ${sortedOption}`} className="mb-3">
+            <DropdownButton variant="secondary" title={`Sort: ${sortedOption}`} className="mb-3">
                 <Dropdown.Item onClick={sortByNumberOfBooks}>Number of books</Dropdown.Item>
                 <Dropdown.Item onClick={sortByNumberOfBooksAscending}>Number of books(Ascending)</Dropdown.Item>
                 <Dropdown.Item onClick={sortAlphabetically}>Alphabetically</Dropdown.Item>
@@ -66,8 +69,8 @@ const AuthorList = ({ loading, error, authors, getAuthorList, books, getBookList
                 <Dropdown.Item onClick={sortByBirthDate}>By Oldest</Dropdown.Item>
                 <Dropdown.Item onClick={sortByBirthDateReverse}>By Youngest</Dropdown.Item>
             </DropdownButton>
-            {loading ? <div>loading...</div> :
-                displayedAuthors ? displayedAuthors.map(author => {
+            {
+                displayedAuthors.length ? displayedAuthors.map(author => {
                     return (
                         <Card className="mb-3" key={author.id}>
                             <Row>
@@ -85,9 +88,8 @@ const AuthorList = ({ loading, error, authors, getAuthorList, books, getBookList
                                 </div>
                             </Row>
                         </Card>)
-                }) : null
+                }) : <div>No authors added</div>
             }
-            {error && <div>{error.message}</div>}
         </div >
     )
 };
@@ -95,13 +97,15 @@ const mapStateToProps = (state) => {
     return {
         authors: getAllAuthors(state),
         books: getAllBooks(state),
-        loading: state.loading.loading,
-        error: state.loading.error
+        authorRequestStatus: state.requestsStatus.hasAuthorRequestHappend,
+        bookRequestStatus: state.requestsStatus.hasBookRequestHappend
     };
 }
 const mapDispatchToProps = {
     getAuthorList,
-    getBookList
+    getBookList,
+    setBookRequestStatus,
+    setAuthorRequestStatus
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthorList);

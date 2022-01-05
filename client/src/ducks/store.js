@@ -4,10 +4,12 @@ import logger from 'redux-logger';
 import { createMiddleware } from 'redux-api-middleware';
 import { entities } from './entities/reducers';
 import { loadingReducer } from './loading/reducer';
+import requestsStatusReducer from './requestsStatus/reducer';
 
 const combinedReducers = combineReducers({
     entities: entities,
-    loading: loadingReducer
+    loading: loadingReducer,
+    requestsStatus: requestsStatusReducer
 });
 
 const store = createStore(combinedReducers,

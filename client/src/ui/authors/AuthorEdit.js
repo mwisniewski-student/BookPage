@@ -6,19 +6,27 @@ import { getAuthorById } from "../../ducks/authors/selectors"
 import { Row, Col } from "react-bootstrap";
 import { getAddressById } from "../../ducks/addresses/selectors";
 import { useEffect } from "react";
-import { getAuthorList } from "../../ducks/authors/operations";
-import { getAddressList } from "../../ducks/addresses/operations";
+import { getOneAuthor } from "../../ducks/authors/operations";
+import { getOneAddress } from "../../ducks/addresses/operations";
 
-const AuthorEdit = ({ updateAuthor, author, address, getAuthorList, getAddressList, loading, error }) => {
+const AuthorEdit = ({ updateAuthor, author, address, getOneAuthor, getOneAddress, id }) => {
     const history = useHistory()
+
     useEffect(() => {
-        !author && !error && getAuthorList();
-        !address && !error && getAddressList();
-    }, []);
+        if (!author) {
+            getOneAuthor(id)
+        }
+        if (!address && author.addressId) {
+            getOneAddress(author.addressId)
+        }
+
+    }, [author, address]);
+
     const onSubmit = (author) => {
         updateAuthor(author)
         history.push('/authors')
     };
+
     const mapToInitialValues = (author) => {
         const data = { ...author, birthDate: author.birthDate.split('T')[0] }
         return address ? {
@@ -28,7 +36,7 @@ const AuthorEdit = ({ updateAuthor, author, address, getAuthorList, getAddressLi
     }
     return (
         <>
-            {loading ? <div>loading...</div> :
+            {
                 author ?
                     <Row>
                         <h1 className="text-center">Edit Author</h1>
@@ -48,14 +56,13 @@ const mapStateToProps = (state, props) => {
     return {
         author,
         address,
-        loading: state.loading.loading,
-        error: state.loading.error
+        id
     }
 }
 const mapDispatchToProps = {
     updateAuthor,
-    getAuthorList,
-    getAddressList
+    getOneAuthor,
+    getOneAddress
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthorEdit)

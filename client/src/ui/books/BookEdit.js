@@ -6,15 +6,16 @@ import { getBookById } from "../../ducks/books/selectors"
 import { Row, Col } from "react-bootstrap";
 import { getAuthorsByIds } from "../../ducks/authors/selectors";
 import { useEffect } from "react";
-import { getBookList } from "../../ducks/books/operations";
-import { getAuthorList } from "../../ducks/authors/operations";
+import { getOneBook } from "../../ducks/books/operations";
+import { getBooksAuthors } from "../../ducks/books/operations";
 
-const BookEdit = ({ updateBook, book, authors, getAuthorList, getBookList, loading, error }) => {
+const BookEdit = ({ updateBook, book, authors, getOneBook, getBooksAuthors, id }) => {
     const history = useHistory()
+
     useEffect(() => {
-        !book && !error && getBookList();
-        !authors && !error && getAuthorList();
-    }, []);
+        !book && getOneBook(id);
+        !authors.length && book && getBooksAuthors(id);
+    }, [book, authors]);
 
     const onSubmit = book => {
         updateBook(book)
@@ -35,7 +36,7 @@ const BookEdit = ({ updateBook, book, authors, getAuthorList, getBookList, loadi
     })
     return (
         <>
-            {loading ? <div>loading...</div> :
+            {
                 book ?
                     <Row>
                         <h1 className="text-center">Edit Book</h1>
@@ -55,14 +56,13 @@ const mapStateToProps = (state, props) => {
     return {
         book,
         authors,
-        loading: state.loading.loading,
-        error: state.loading.error
+        id
     }
 }
 const mapDispatchToProps = {
     updateBook,
-    getBookList,
-    getAuthorList
+    getOneBook,
+    getBooksAuthors
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookEdit)
