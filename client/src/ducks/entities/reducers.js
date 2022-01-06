@@ -4,7 +4,8 @@ import types from "./types";
 const allEntities = [
     "books",
     'authors',
-    'addresses'
+    'addresses',
+    'reviews'
 ];
 
 const defaultState = allEntities.reduce(
@@ -30,7 +31,7 @@ const entityReducer = (entity, state = { allIds: [], byId: {} }, action) => {
         case types.CREATE:
             return {
                 byId: { ...state.byId, ...actionEntities },
-                allIds: [...state.allIds, ...Object.keys(actionEntities)]
+                allIds: _.uniq([...state.allIds, ...Object.keys(actionEntities)])
             }
         case types.DELETE:
             return {
@@ -43,12 +44,12 @@ const entityReducer = (entity, state = { allIds: [], byId: {} }, action) => {
                     ..._.omit(state.byId, Object.keys(actionEntities)),
                     ...actionEntities
                 },
-                allIds: state.allIds
+                allIds: _.uniq([...state.allIds, ...Object.keys(actionEntities)])
             }
         case types.GET_ONE:
             return {
                 byId: { ...state.byId, ...actionEntities },
-                allIds: [...state.allIds, ...Object.keys(actionEntities)]
+                allIds: _.uniq([...state.allIds, ...Object.keys(actionEntities)])
             }
         case types.GET_MANY:
             return {

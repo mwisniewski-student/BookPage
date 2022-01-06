@@ -14,10 +14,15 @@ router.post('/', catchAsync(async (req, res) => {
 }))
 
 router.get('/', catchAsync(async (req, res) => {
-    const books = await Book.find();
+    const books = await Book.find().populate('reviews');
     res.send(books.map(book => {
-        const { _id, ...rest } = book._doc
-        return ({ id: _id, ...rest })
+        const { _id, ...restBook } = book._doc
+        const reviews = book.reviews.map(x => {
+            const { _id, ...restReview } = x._doc;
+            return { id: _id, ...restReview }
+        })
+        restBook.reviews = reviews
+        return { id: _id, ...restBook }
     }))
 }))
 
@@ -26,19 +31,29 @@ router.get('/:id', catchAsync(async (req, res) => {
     if (typeof id !== 'string' || id.length !== 24) {
         throw new ExpressError('Wrong id given', 404)
     }
-    const book = await Book.findById(id);
+    const book = await Book.findById(id).populate('reviews');
     if (!book) throw new ExpressError('Book not found', 404)
-    const { _id, ...rest } = book._doc
-    res.send({ id: _id, ...rest })
+    const { _id, ...restBook } = book._doc
+    const reviews = book.reviews.map(x => {
+        const { _id, ...restReview } = x._doc;
+        return { id: _id, ...restReview }
+    })
+    restBook.reviews = reviews
+    res.send({ id: _id, ...restBook })
 }))
 
 router.get('/by-author/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const books = await Book.find({ authorsIds: id });
+    const books = await Book.find({ authorsIds: id }).populate('reviews');
     if (!books.length) throw new ExpressError('Books not found', 404)
     res.send(books.map(book => {
-        const { _id, ...rest } = book._doc
-        return ({ id: _id, ...rest })
+        const { _id, ...restBook } = book._doc
+        const reviews = book.reviews.map(x => {
+            const { _id, ...restReview } = x._doc;
+            return { id: _id, ...restReview }
+        })
+        restBook.reviews = reviews
+        return { id: _id, ...restBook }
     }))
 }))
 
@@ -56,16 +71,27 @@ router.get('/:id/authors', catchAsync(async (req, res) => {
 
 router.put('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const response = await Book.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
-    const { _id, ...rest } = response._doc
-    res.send({ id: _id, ...rest })
+    const book = await Book.findByIdAndUpdate(id, req.body, { runValidators: true, new: true }).populate('reviews')
+    const { _id, ...restBook } = book._doc
+    const reviews = book.reviews.map(x => {
+        const { _id, ...restReview } = x._doc;
+        return { id: _id, ...restReview }
+    })
+    restBook.reviews = reviews
+    res.send({ id: _id, ...restBook })
 }))
 
 router.delete('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const response = await Book.findByIdAndDelete(id)
-    if (!response) { throw new ExpressError('Book doesn\'t exists', 404) }
-    res.send(response)
+    const book = await Book.findByIdAndDelete(id).populate('reviews')
+    if (!book) { throw new ExpressError('Book doesn\'t exists', 404) }
+    const { _id, ...restBook } = book._doc
+    const reviews = book.reviews.map(x => {
+        const { _id, ...restReview } = x._doc;
+        return { id: _id, ...restReview }
+    })
+    restBook.reviews = reviews
+    res.send({ id: _id, ...restBook })
 }))
 
 module.exports = router

@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const Book = require('./Book')
 
 const authorModel = new Schema({
     name: {
@@ -19,6 +20,14 @@ const authorModel = new Schema({
     addressId: {
         type: Schema.Types.ObjectId,
         ref: 'Address'
+    }
+})
+
+authorModel.post('findOneAndDelete', async doc => {
+    if (doc) {
+        await Book.deleteMany({
+            authorsIds: doc._id
+        })
     }
 })
 

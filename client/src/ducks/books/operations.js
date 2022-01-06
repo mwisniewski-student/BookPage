@@ -3,7 +3,10 @@ import { schema, normalize } from 'normalizr';
 import types from "../entities/types";
 import loadingTypes from "../loading/types";
 
-const bookSchema = new schema.Entity('books');
+const reviewSchema = new schema.Entity('reviews');
+const bookSchema = new schema.Entity('books', {
+    reviews: [reviewSchema]
+});
 const booksSchema = new schema.Array(bookSchema);
 const authorSchema = new schema.Entity('authors');
 const authorsSchema = new schema.Array(authorSchema);
@@ -24,7 +27,7 @@ export const getBookList = () => {
                     const { entities } = normalize(json, booksSchema)
                     return entities;
                 },
-                meta: { actionType: types.GET_ALL }
+                meta: { actionType: types.GET_MANY }
             },
             loadingTypes.FAILURE
         ]
@@ -68,6 +71,7 @@ export const getBooksByAuthorRequest = id => {
                 payload: async (_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, booksSchema)
+                    console.log(entities)
                     return entities;
                 },
                 meta: { actionType: types.GET_MANY }
@@ -136,8 +140,8 @@ export const deleteBook = bookToDelete => {
             {
                 type: loadingTypes.SUCCESS,
                 payload: async (action, state, res) => {
-                    const { entities } = normalize(bookToDelete, bookSchema);
-                    console.log('Normalized Entities', entities);
+                    const json = await res.json();
+                    const { entities } = normalize(json, bookSchema);
                     return entities;
                 },
                 meta: { actionType: types.DELETE }

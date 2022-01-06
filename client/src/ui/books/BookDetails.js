@@ -6,12 +6,18 @@ import { connect } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
+import ReviewAdd from "../Reviews/ReviewAdd";
+import { getReviewsFromBook } from "../../ducks/reviews/selectors";
+import { deleteReview } from "../../ducks/reviews/operations";
 
 const BookDetails = ({ book, authors, getBooksAuthors, id,
-    getOneBook, deleteBook }) => {
-    const [showConfirm, setShowConfirm] = useState(false);
-    const handleClose = () => setShowConfirm(false);
-    const handleShow = () => setShowConfirm(true);
+    getOneBook, deleteBook, reviews, deleteReview }) => {
+    const [showConfirmDeleteBook, setShowConfirmDeleteBook] = useState(false);
+    const handleCloseDeleteBook = () => setShowConfirmDeleteBook(false);
+    const handleShowDeleteBook = () => setShowConfirmDeleteBook(true);
+    const [showConfirmAddReview, setShowConfirmAddReview] = useState(false);
+    const handleCloseAddReview = () => setShowConfirmAddReview(false);
+    const handleShowAddReview = () => setShowConfirmAddReview(true);
     const history = useHistory()
 
     const handleDelete = book => {
@@ -22,11 +28,10 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
     useEffect(() => {
         if (!book) {
             getOneBook(id)
-            if (!authors.length) {
+            if (!authors.length && book) {
                 getBooksAuthors(id)
             }
         }
-        // !authors.length && book && getBooksAuthors(id);
     }, [book, authors]);
 
     return (
@@ -34,7 +39,7 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
             {
                 book ?
                     <Row>
-                        <Col md={{ span: 6, offset: 3 }}>
+                        <Col md={{ span: 6 }}>
                             <Card className="mb-3">
                                 <Card.Img variant="top" src={book.image} />
                                 <Card.Body>
@@ -53,10 +58,10 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
                                 </ListGroup>
                                 <Card.Body>
                                     <Link to={`/books/${book.id}/edit`} className="btn btn-info">Edit</Link>
-                                    <Button variant="danger" className="mx-3" onClick={handleShow}>Delete</Button>
+                                    <Button variant="danger" className="mx-3" onClick={handleShowDeleteBook}>Delete</Button>
                                     <Modal
-                                        show={showConfirm}
-                                        onHide={handleClose}
+                                        show={showConfirmDeleteBook}
+                                        onHide={handleCloseDeleteBook}
                                         backdrop="static"
                                         keyboard={false}
                                     >
@@ -67,7 +72,7 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
                                             Are you sure you want to permanently delete this book?
                                         </Modal.Body>
                                         <Modal.Footer>
-                                            <Button variant="secondary" onClick={handleClose}>
+                                            <Button variant="secondary" onClick={handleCloseDeleteBook}>
                                                 Close
                                             </Button>
                                             <Button variant="danger" onClick={() => handleDelete(book)}>Delete</Button>
@@ -84,6 +89,17 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
                                 </Card.Body> : null}
                             </Card>
                         </Col>
+                        <Col md={{ span: 6 }}>
+                            <Button variant="success" onClick={handleShowAddReview} className="mb-3">Add Review</Button>
+                            <ReviewAdd bookId={id} showConfirm={showConfirmAddReview} handleClose={handleCloseAddReview} />
+                            {reviews.map(review => review ? <Card className="mb-3" key={review.id}>
+                                <Card.Body>
+                                    <Card.Title>Rating: {review.rating}</Card.Title>
+                                    <Card.Text>Review: {review.body}</Card.Text>
+                                    <Button variant="danger" className="btn-sm" onClick={() => deleteReview(id, review.id)}>Delete</Button>
+                                </Card.Body>
+                            </Card> : null)}
+                        </Col>
                     </Row> : null
             }
         </>
@@ -96,6 +112,7 @@ const mapStateToProps = (state, props) => {
     return {
         book,
         authors: book ? getAuthorsByIds(state, book.authorsIds) : [],
+        reviews: book ? getReviewsFromBook(state, book.id) : [],
         id
     }
 }
@@ -103,7 +120,8 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = {
     getOneBook,
     getBooksAuthors,
-    deleteBook
+    deleteBook,
+    deleteReview
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookDetails)

@@ -84,7 +84,7 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, authors, authorRequest
                             <Field name="image" className="form-control" id="image" />
                             <ErrorMessage className="text-danger" name="image" component="div" />
                         </div>
-                        <Button variant="success" type="submit">Zatwierdź</Button>
+                        <Button variant="success" type="submit">Submit</Button>
                     </Form>
                 </Formik>}
         </div>

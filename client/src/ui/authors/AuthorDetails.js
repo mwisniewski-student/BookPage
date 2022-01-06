@@ -22,7 +22,7 @@ const AuthorDetails = ({ author, address, books, id,
     }
     useEffect(() => {
         !author && getOneAuthor(id);
-        !books && getBooksByAuthorRequest(id);
+        !books.length && author && getBooksByAuthorRequest(id);
         !address && author && author.addressId && getOneAddress(author.addressId);
     }, [author, address, books]);
 

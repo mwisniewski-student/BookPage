@@ -13,9 +13,11 @@ app.use(cors({
 const books = require('./routes/books');
 const addresses = require('./routes/addresses');
 const authors = require('./routes/authors');
+const reviews = require('./routes/reviews');
 app.use('/books', books);
 app.use('/addresses', addresses);
 app.use('/authors', authors);
+app.use('/books/:id/reviews', reviews)
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404))
@@ -23,7 +25,7 @@ app.all('*', (req, res, next) => {
 
 app.use((err, req, res, next) => {
     const { statusCode = 500 } = err;
-    if (!err.message) err.message = 'Oh No, Something Went Wrong!'
+    if (!err.message) { err.message = 'Oh No, Something Went Wrong!' }
     res.status(statusCode).send({ err })
 })
 
