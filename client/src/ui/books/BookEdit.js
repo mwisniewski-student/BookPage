@@ -19,7 +19,7 @@ const BookEdit = ({ updateBook, book, authors, getOneBook, getBooksAuthors, id }
 
     const onSubmit = book => {
         updateBook(book)
-        history.push('/books')
+        history.push('/')
     };
 
     const mapToInitialValues = book => ({

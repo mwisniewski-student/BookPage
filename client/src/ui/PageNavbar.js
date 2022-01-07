@@ -12,7 +12,6 @@ const PageNavbar = () => {
                 </Navbar.Toggle>
                 <Navbar.Collapse id="navbarNavAltMarkup">
                     <Nav>
-                        <Link to="/books" className="nav-link">Books</Link >
                         <Link to="/authors" className="nav-link">Authors</Link >
                     </Nav>
                 </Navbar.Collapse>

@@ -45,7 +45,6 @@ router.get('/:id', catchAsync(async (req, res) => {
 router.get('/by-author/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const books = await Book.find({ authorsIds: id }).populate('reviews');
-    if (!books.length) throw new ExpressError('Books not found', 404)
     res.send(books.map(book => {
         const { _id, ...restBook } = book._doc
         const reviews = book.reviews.map(x => {

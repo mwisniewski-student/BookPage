@@ -19,7 +19,7 @@ const AuthorAdd = ({ createAuthor }) => {
     };
     return (
         <Row>
-            <h1 className="text-center">Dodaj autora</h1>
+            <h1 className="text-center">Add Author</h1>
             <Col md={{ span: 6, offset: 3 }} >
                 <AuthorForm initialValues={initialValues} onSubmit={onSubmit} />
             </Col>

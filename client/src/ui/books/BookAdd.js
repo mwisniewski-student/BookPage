@@ -18,7 +18,7 @@ const BookAdd = ({ createBook }) => {
 
     const onSubmit = book => {
         createBook(book)
-        history.push('/books')
+        history.push('/')
     };
     return (
         <Row>

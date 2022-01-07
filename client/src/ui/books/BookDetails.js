@@ -12,17 +12,24 @@ import { deleteReview } from "../../ducks/reviews/operations";
 
 const BookDetails = ({ book, authors, getBooksAuthors, id,
     getOneBook, deleteBook, reviews, deleteReview }) => {
+
     const [showConfirmDeleteBook, setShowConfirmDeleteBook] = useState(false);
     const handleCloseDeleteBook = () => setShowConfirmDeleteBook(false);
     const handleShowDeleteBook = () => setShowConfirmDeleteBook(true);
+
     const [showConfirmAddReview, setShowConfirmAddReview] = useState(false);
     const handleCloseAddReview = () => setShowConfirmAddReview(false);
     const handleShowAddReview = () => setShowConfirmAddReview(true);
+
+    const [showConfirmDeleteReview, setShowConfirmDeleteReview] = useState(false);
+    const handleCloseDeleteReview = () => setShowConfirmDeleteReview(false);
+    const handleShowDeleteReview = () => setShowConfirmDeleteReview(true);
+
     const history = useHistory()
 
     const handleDelete = book => {
         deleteBook(book);
-        history.push('/books')
+        history.push('/')
     }
 
     useEffect(() => {
@@ -96,7 +103,26 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
                                 <Card.Body>
                                     <Card.Title>Rating: {review.rating}</Card.Title>
                                     <Card.Text>Review: {review.body}</Card.Text>
-                                    <Button variant="danger" className="btn-sm" onClick={() => deleteReview(id, review.id)}>Delete</Button>
+                                    <Button variant="danger" className="btn-sm" onClick={handleShowDeleteReview}>Delete</Button>
+                                    <Modal
+                                        show={showConfirmDeleteReview}
+                                        onHide={handleCloseDeleteReview}
+                                        backdrop="static"
+                                        keyboard={false}
+                                    >
+                                        <Modal.Header closeButton>
+                                            <Modal.Title>Delete</Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            Are you sure you want to permanently delete this review?
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <Button variant="secondary" onClick={handleCloseDeleteReview}>
+                                                Close
+                                            </Button>
+                                            <Button variant="danger" onClick={() => deleteReview(id, review.id)}>Delete</Button>
+                                        </Modal.Footer>
+                                    </Modal>
                                 </Card.Body>
                             </Card> : null)}
                         </Col>

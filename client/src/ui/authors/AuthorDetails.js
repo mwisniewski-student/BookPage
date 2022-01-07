@@ -1,17 +1,15 @@
 import { Row, Col, Card, ListGroup, Button, Modal } from "react-bootstrap";
 import { getAuthorById } from "../../ducks/authors/selectors"
 import { getBooksByAuthor } from "../../ducks/books/selectors";
-import { getAddressById } from "../../ducks/addresses/selectors";
 import { getBooksByAuthorRequest } from "../../ducks/books/operations";
 import { getOneAuthor, deleteAuthor } from "../../ducks/authors/operations"
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
-import { getOneAddress } from "../../ducks/addresses/operations";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 
-const AuthorDetails = ({ author, address, books, id,
-    getOneAuthor, getOneAddress, getBooksByAuthorRequest, deleteAuthor }) => {
+const AuthorDetails = ({ author, books, id,
+    getOneAuthor, getBooksByAuthorRequest, deleteAuthor }) => {
     const [showConfirm, setShowConfirm] = useState(false);
     const handleClose = () => setShowConfirm(false);
     const handleShow = () => setShowConfirm(true);
@@ -21,10 +19,8 @@ const AuthorDetails = ({ author, address, books, id,
         history.push('/authors')
     }
     useEffect(() => {
-        !author && getOneAuthor(id);
-        !books.length && author && getBooksByAuthorRequest(id);
-        !address && author && author.addressId && getOneAddress(author.addressId);
-    }, [author, address, books]);
+        !author && getOneAuthor(id) && !books.length && getBooksByAuthorRequest(id);
+    }, [author, books]);
 
     return (
         <>
@@ -87,14 +83,12 @@ const mapStateToProps = (state, props) => {
     return {
         author,
         books: getBooksByAuthor(state, id),
-        address: author ? getAddressById(state, author.addressId) : null,
         id
     }
 }
 
 const mapDispatchToProps = {
     getOneAuthor,
-    getOneAddress,
     getBooksByAuthorRequest,
     deleteAuthor
 }

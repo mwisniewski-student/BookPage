@@ -11,16 +11,14 @@ app.use(cors({
 }))
 
 const books = require('./routes/books');
-const addresses = require('./routes/addresses');
 const authors = require('./routes/authors');
 const reviews = require('./routes/reviews');
 app.use('/books', books);
-app.use('/addresses', addresses);
 app.use('/authors', authors);
 app.use('/books/:id/reviews', reviews)
 
 app.all('*', (req, res, next) => {
-    next(new ExpressError('Page Not Found', 404))
+    next(new ExpressError('Route Not Found', 404))
 })
 
 app.use((err, req, res, next) => {

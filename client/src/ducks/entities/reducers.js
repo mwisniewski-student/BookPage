@@ -4,7 +4,6 @@ import types from "./types";
 const allEntities = [
     "books",
     'authors',
-    'addresses',
     'reviews'
 ];
 

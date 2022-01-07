@@ -4,36 +4,28 @@ import AuthorForm from './AuthorForm';
 import { updateAuthor } from '../../ducks/authors/operations';
 import { getAuthorById } from "../../ducks/authors/selectors"
 import { Row, Col } from "react-bootstrap";
-import { getAddressById } from "../../ducks/addresses/selectors";
 import { useEffect } from "react";
 import { getOneAuthor } from "../../ducks/authors/operations";
-import { getOneAddress } from "../../ducks/addresses/operations";
 
-const AuthorEdit = ({ updateAuthor, author, address, getOneAuthor, getOneAddress, id }) => {
+const AuthorEdit = ({ updateAuthor, author, getOneAuthor, id }) => {
     const history = useHistory()
 
     useEffect(() => {
         if (!author) {
             getOneAuthor(id)
         }
-        if (!address && author.addressId) {
-            getOneAddress(author.addressId)
-        }
-
-    }, [author, address]);
+    }, [author]);
 
     const onSubmit = (author) => {
         updateAuthor(author)
         history.push('/authors')
     };
 
-    const mapToInitialValues = (author) => {
-        const data = { ...author, birthDate: author.birthDate.split('T')[0] }
-        return address ? {
-            ...data,
-            addressId: { value: address.id, label: address.city }
-        } : data
-    }
+    const mapToInitialValues = (author) => ({
+        ...author,
+        birthDate: author.birthDate.split('T')[0]
+    })
+
     return (
         <>
             {
@@ -52,17 +44,14 @@ const AuthorEdit = ({ updateAuthor, author, address, getOneAuthor, getOneAddress
 const mapStateToProps = (state, props) => {
     const { id } = props.match.params;
     const author = getAuthorById(state, id);
-    const address = author ? getAddressById(state, author.addressId) : {}
     return {
         author,
-        address,
         id
     }
 }
 const mapDispatchToProps = {
     updateAuthor,
-    getOneAuthor,
-    getOneAddress
+    getOneAuthor
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthorEdit)

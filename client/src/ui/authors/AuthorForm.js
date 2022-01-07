@@ -1,22 +1,19 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { connect } from "react-redux";
-import { getAllAddresses } from "../../ducks/addresses/selectors";
-import { getAddressList } from "../../ducks/addresses/operations";
 import { getAllAuthors } from "../../ducks/authors/selectors";
 import { getAuthorList } from "../../ducks/authors/operations";
 import * as Yup from 'yup';
 import { useEffect } from "react";
 import { Form as BootstrapForm, Button } from "react-bootstrap";
 import { default as ReactSelect } from "react-select";
-import { setAddressRequestStatus, setAuthorRequestStatus } from "../../ducks/requestsStatus/actions";
+import { setAuthorRequestStatus } from "../../ducks/requestsStatus/actions";
 
-const AuthorForm = ({ initialValues, onSubmit, addresses, authors, authorRequestStatus, addressRequestStatus,
-    getAddressList, getAuthorList, setAddressRequestStatus, setAuthorRequestStatus }) => {
+const AuthorForm = ({ initialValues, onSubmit, authors, authorRequestStatus,
+    getAuthorList, setAuthorRequestStatus }) => {
 
     useEffect(() => {
         !authorRequestStatus && getAuthorList() && setAuthorRequestStatus(true);
-        !addressRequestStatus && getAddressList() && setAddressRequestStatus(true);
-    }, [addresses, authors]);
+    }, [authors]);
 
     const authorSchema = Yup.object().shape({
         name: Yup.mixed().required("Author Name is required!")
@@ -26,18 +23,7 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, authors, authorRequest
             .required("Birth Date is required!"),
         image: Yup.string().matches(/^https?:\/\/.+\/.+$/, "Image must be url"),
         description: Yup.string(),
-        addressId: Yup.mixed().nullable()
     })
-
-    const addressOptions = addresses.map(address => ({ label: address.city, value: address.id }))
-
-    const mapSubmitValues = values => {
-        const { addressId, ...rest } = values
-        return addressId ? {
-            ...rest,
-            addressId: addressId.value
-        } : values
-    }
 
     return (
         <div>
@@ -45,7 +31,7 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, authors, authorRequest
                 <Formik
                     initialValues={initialValues}
                     enableReinitilise={true}
-                    onSubmit={(values) => onSubmit(mapSubmitValues(values))}
+                    onSubmit={onSubmit}
                     validationSchema={authorSchema}
                 >
                     <Form>
@@ -58,21 +44,6 @@ const AuthorForm = ({ initialValues, onSubmit, addresses, authors, authorRequest
                             <BootstrapForm.Label htmlFor="birthDate">Birth Date</BootstrapForm.Label>
                             <Field name="birthDate" type="date" className="form-control" id="birthDate" />
                             <ErrorMessage className="text-danger" name="birthDate" component="div" />
-                        </div>
-                        <div className="mb-3">
-                            <BootstrapForm.Label htmlFor="addressId">Address</BootstrapForm.Label>
-                            <Field name="addressId" className="form-control" id="addressId">
-                                {({ field, form, meta }) => (
-                                    <ReactSelect
-                                        options={addressOptions}
-                                        closeMenuOnSelect={false}
-                                        onChange={(value) => form.setFieldValue('addressId', value)}
-                                        value={field.value}
-                                        isClearable={true}
-                                    />
-                                )}
-                            </Field>
-                            <ErrorMessage className="text-danger" name="addressId" component="div" />
                         </div>
                         <div className="mb-3">
                             <BootstrapForm.Label htmlFor="description">Description</BootstrapForm.Label>
@@ -97,17 +68,13 @@ const mapStateToProps = (state, props) => {
     return {
         initialValues,
         onSubmit,
-        addresses: getAllAddresses(state),
         authors: getAllAuthors(state),
-        authorRequestStatus: state.requestsStatus.hasAuthorRequestHappend,
-        addressRequestStatus: state.requestsStatus.hasAddressRequestHappend
+        authorRequestStatus: state.requestsStatus.hasAuthorRequestHappend
     }
 }
 
 const mapDispatchToProps = {
-    getAddressList,
     getAuthorList,
-    setAddressRequestStatus,
     setAuthorRequestStatus
 }
 

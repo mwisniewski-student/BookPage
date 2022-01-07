@@ -25,7 +25,7 @@ function App({ error, loading }) {
           loading ? <Loader /> :
             <main className='container mt-5 mb-3'>
               <Switch>
-                <Route path="/books" exact component={BookList} />
+                <Route path="/" exact component={BookList} />
                 <Route path="/books/add" component={BookAdd} />
                 <Route path="/books/:id" exact component={BookDetails} />
                 <Route path="/books/:id/edit" component={BookEdit} />

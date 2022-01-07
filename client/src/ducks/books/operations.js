@@ -71,7 +71,6 @@ export const getBooksByAuthorRequest = id => {
                 payload: async (_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, booksSchema)
-                    console.log(entities)
                     return entities;
                 },
                 meta: { actionType: types.GET_MANY }
