@@ -22,7 +22,7 @@ const AuthorForm = ({ initialValues, onSubmit, authors, authorRequestStatus,
         birthDate: Yup.date().max(new Date(), "Author must be born now!")
             .required("Birth Date is required!"),
         image: Yup.string().matches(/^https?:\/\/.+\/.+$/, "Image must be url"),
-        description: Yup.string(),
+        description: Yup.string().max(1000, 'Description can contain maximally 1000 characters.'),
     })
 
     return (

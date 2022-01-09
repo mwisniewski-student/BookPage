@@ -1,13 +1,14 @@
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getAllAuthors } from "../../ducks/authors/selectors";
 import { getAllBooks } from "../../ducks/books/selectors";
 import { getBookList } from "../../ducks/books/operations";
 import { getAuthorList } from "../../ducks/authors/operations";
 import { Link } from "react-router-dom";
-import { Card, Row, Image, DropdownButton, Dropdown } from "react-bootstrap";
+import { Card, Row, Image, DropdownButton, Dropdown, Button, ButtonGroup, Offcanvas } from "react-bootstrap";
 import { setBookRequestStatus, setAuthorRequestStatus } from "../../ducks/requestsStatus/actions";
-
+import { IoOptionsSharp } from 'react-icons/io5';
+import FilterAuthorsForm from "./FilterAuthorsForm";
 
 const AuthorList = ({ authors, getAuthorList, books, getBookList,
     authorRequestStatus, bookRequestStatus, setBookRequestStatus, setAuthorRequestStatus }) => {
@@ -21,11 +22,23 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
         return books.filter(book => book.authorsIds.includes(authorId)).length
     }
 
+    const [startAuthorList, setStartAuthorList] = useState([])
     const [displayedAuthors, setDisplayedAuthors] = useState([])
     const [sortedOption, setSortedOption] = useState('')
 
+
+    const setStartingOptions = () => {
+        const authorsSortedAndMapped = [...authors].sort((x, y) => x.name.toLowerCase().localeCompare(y.name.toLowerCase()))
+            .map(author => ({
+                ...author,
+                numberOfBooks: getNumberOfBooks(author.id)
+            }))
+        setStartAuthorList(authorsSortedAndMapped)
+        setDisplayedAuthors(authorsSortedAndMapped)
+        setSortedOption('Alphabetically')
+    }
     useEffect(() => {
-        setDisplayedAuthors([...authors])
+        setStartingOptions()
     }, [authors])
 
     const sortByNumberOfBooks = () => {
@@ -57,18 +70,37 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
         setSortedOption("By Youngest")
     }
 
+    const [showFilterCanvas, setShowFilterCanvas] = useState(false);
+    const handleCloseFilterCanvas = () => setShowFilterCanvas(false);
+    const handleShowFilterCanvas = () => setShowFilterCanvas(true);
+
     return (
         <div>
-            <Link to="/authors/add">Add author</Link>
             <h3>Author list</h3>
-            <DropdownButton variant="secondary" title={`Sort: ${sortedOption}`} className="mb-3">
-                <Dropdown.Item onClick={sortByNumberOfBooks}>Number of books</Dropdown.Item>
-                <Dropdown.Item onClick={sortByNumberOfBooksAscending}>Number of books(Ascending)</Dropdown.Item>
-                <Dropdown.Item onClick={sortAlphabetically}>Alphabetically</Dropdown.Item>
-                <Dropdown.Item onClick={sortAlphabeticallyReverse}>Alphabetically(Reverse)</Dropdown.Item>
-                <Dropdown.Item onClick={sortByBirthDate}>By Oldest</Dropdown.Item>
-                <Dropdown.Item onClick={sortByBirthDateReverse}>By Youngest</Dropdown.Item>
-            </DropdownButton>
+
+            <ButtonGroup aria-label="Filter or Sort" className="mb-3">
+                <Button variant="primary" onClick={handleShowFilterCanvas}><IoOptionsSharp size={25} />  Filter</Button>
+                <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title={`Sort: ${sortedOption}`}>
+                    <Dropdown.Item onClick={sortByNumberOfBooks}>Number of books</Dropdown.Item>
+                    <Dropdown.Item onClick={sortByNumberOfBooksAscending}>Number of books(Ascending)</Dropdown.Item>
+                    <Dropdown.Item onClick={sortAlphabetically}>Alphabetically</Dropdown.Item>
+                    <Dropdown.Item onClick={sortAlphabeticallyReverse}>Alphabetically(Reverse)</Dropdown.Item>
+                    <Dropdown.Item onClick={sortByBirthDate}>By Oldest</Dropdown.Item>
+                    <Dropdown.Item onClick={sortByBirthDateReverse}>By Youngest</Dropdown.Item>
+                </DropdownButton>
+            </ButtonGroup>
+
+
+            <Offcanvas show={showFilterCanvas} onHide={handleCloseFilterCanvas}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title><h1>Filter</h1></Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <FilterAuthorsForm setDisplayedAuthors={setDisplayedAuthors} allAuthors={startAuthorList}
+                        setCanvasShow={setShowFilterCanvas} setSortedOption={setSortedOption} />
+                </Offcanvas.Body>
+            </Offcanvas>
+
             {
                 displayedAuthors.length ? displayedAuthors.map(author => {
                     return (
@@ -81,14 +113,14 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
                                     <Card.Body>
                                         <Card.Title>{author.name}</Card.Title>
                                         <Card.Text>{author.description}</Card.Text>
-                                        <Card.Text><small className="text-muted">Number of books: {getNumberOfBooks(author.id)}</small></Card.Text>
+                                        <Card.Text><small className="text-muted">Number of books: {author.numberOfBooks}</small></Card.Text>
                                         <Card.Text><small className="text-muted">Birth Date: {new Date(author.birthDate).toLocaleDateString()}</small></Card.Text>
                                         <Link className="btn btn-primary" to={`/authors/${author.id}`}>Details</Link>
                                     </Card.Body>
                                 </div>
                             </Row>
                         </Card>)
-                }) : <div>No authors added</div>
+                }) : <div>No authors</div>
             }
         </div >
     )

@@ -9,7 +9,10 @@ const bookSchema = new Schema({
         maxlength: 40,
         unique: true
     },
-    description: String,
+    description: {
+        type: String,
+        max: 1000
+    },
     categories: {
         type: Array,
         required: true,

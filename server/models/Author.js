@@ -8,7 +8,10 @@ const authorModel = new Schema({
         unique: true,
         maxlength: 40
     },
-    description: String,
+    description: {
+        type: String,
+        max: 1000
+    },
     image: {
         type: String,
         match: /^https?:\/\/.+\/.+$/

@@ -22,6 +22,7 @@ app.all('*', (req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
+    console.error(err)
     const { statusCode = 500 } = err;
     if (!err.message) { err.message = 'Oh No, Something Went Wrong!' }
     res.status(statusCode).send({ err })
@@ -45,4 +46,6 @@ mongoose
             console.log(`API server available from: http://${apiHost}:${apiPort}`);
         });
     })
-    .catch(error => console.error('Error connecting to MongoDB', error));
+    .catch(error => {
+        console.error('Error connecting to MongoDB', error)
+    });

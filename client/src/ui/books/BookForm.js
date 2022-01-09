@@ -36,7 +36,7 @@ const BookForm = ({ initialValues, onSubmit, authors, books, authorRequestStatus
             .required("Publish date is required!"),
         image: Yup.string().matches(/^https?:\/\/.+\/.+$/, "Image must be url"),
         numberOfPages: Yup.number().min(1, "Book must have at least one page!").required("Number of pages is required!"),
-        description: Yup.string(),
+        description: Yup.string().max(1000, 'Description can contain maximally 1000 characters.'),
         authorsIds: Yup.array().of(Yup.object().shape({
             label: Yup.string().required(),
             value: Yup.mixed().oneOf(authors.map(author => {
