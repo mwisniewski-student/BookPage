@@ -3,7 +3,6 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import AuthorList from './ui/authors/AuthorList';
 import AuthorAdd from './ui/authors/AuthorAdd';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.scss';
 import PageNavbar from './ui/PageNavbar';
 import Footer from './ui/Footer';
 import AuthorDetails from './ui/authors/AuthorDetails';

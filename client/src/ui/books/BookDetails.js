@@ -9,6 +9,7 @@ import { useHistory } from "react-router";
 import ReviewAdd from "../Reviews/ReviewAdd";
 import { getReviewsFromBook } from "../../ducks/reviews/selectors";
 import { deleteReview } from "../../ducks/reviews/operations";
+import '../stylesheets/starability.css'
 
 const BookDetails = ({ book, authors, getBooksAuthors, id,
     getOneBook, deleteBook, reviews, deleteReview }) => {
@@ -35,9 +36,9 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
     useEffect(() => {
         if (!book) {
             getOneBook(id)
-            if (!authors.length && book) {
-                getBooksAuthors(id)
-            }
+        }
+        if (!authors.length) {
+            getBooksAuthors(id)
         }
     }, [book, authors]);
 
@@ -101,8 +102,10 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
                             <ReviewAdd bookId={id} showConfirm={showConfirmAddReview} handleClose={handleCloseAddReview} />
                             {reviews.map(review => review ? <Card className="mb-3" key={review.id}>
                                 <Card.Body>
-                                    <Card.Title>Rating: {review.rating}</Card.Title>
-                                    <Card.Text>Review: {review.body}</Card.Text>
+                                    <p className="starability-result" data-rating={review.rating}>
+                                        Rated: {review.rating} stars
+                                    </p>
+                                    <Card.Text>{review.body}</Card.Text>
                                     <Button variant="danger" className="btn-sm" onClick={handleShowDeleteReview}>Delete</Button>
                                     <Modal
                                         show={showConfirmDeleteReview}

@@ -5,7 +5,7 @@ import { Modal } from "react-bootstrap";
 
 const ReviewAdd = ({ createReview, bookId, showConfirm, handleClose }) => {
     const initialValues = {
-        rating: 3,
+        rating: 0,
         body: ''
     }
 

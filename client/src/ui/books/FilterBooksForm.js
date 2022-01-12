@@ -11,9 +11,9 @@ const FilterBooksForm = ({ setDisplayedBooks, allBooks, setCanvasShow, setSorted
         const filteredByTitle = values.title ? books.filter(book => book.title.toLowerCase().includes(values.title.toLowerCase())) : books
         const filteredByNumberOfPages = filteredByTitle.filter(book => book.numberOfPages >= values.minPagesNumber && book.numberOfPages <= values.maxPagesNumber)
         const categoriesMapped = values.categories.map(x => x.value)
-        const filteredByCategory = filteredByNumberOfPages.filter(book => {
+        const filteredByCategory = categoriesMapped.length ? filteredByNumberOfPages.filter(book => {
             return book.categories.some(category => categoriesMapped.includes(category))
-        })
+        }) : filteredByNumberOfPages
         setDisplayedBooks([...filteredByCategory]);
         setCanvasShow(false);
         setSortedOption('Alphabetically');

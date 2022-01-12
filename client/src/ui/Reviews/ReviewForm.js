@@ -6,7 +6,7 @@ const ReviewForm = ({ initialValues, onSubmit }) => {
 
     const reviewSchema = Yup.object().shape({
         body: Yup.string(),
-        rating: Yup.number().min(1).max(5).required()
+        rating: Yup.number().min(1, 'Rating is required!').max(5).required()
     })
 
     return (
@@ -20,8 +20,20 @@ const ReviewForm = ({ initialValues, onSubmit }) => {
                 >
                     <Form className="mb-5">
                         <div className="mb-3">
-                            <BootstrapForm.Label htmlFor="rating">Rating</BootstrapForm.Label>
-                            <Field name="rating" className="form-range" id="rating" type="range" min="1" max="5" />
+                            <fieldset className="starability-basic">
+                                <legend>Rating:</legend>
+                                <Field type="radio" id="no-rate" className="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
+                                <Field type="radio" id="first-rate1" name="rating" value="1" />
+                                <BootstrapForm.Label htmlFor="first-rate1" title="Terrible">1 star</BootstrapForm.Label>
+                                <Field type="radio" id="first-rate2" name="rating" value="2" />
+                                <BootstrapForm.Label htmlFor="first-rate2" title="Not good">2 stars</BootstrapForm.Label>
+                                <Field type="radio" id="first-rate3" name="rating" value="3" />
+                                <BootstrapForm.Label htmlFor="first-rate3" title="Average">3 stars</BootstrapForm.Label>
+                                <Field type="radio" id="first-rate4" name="rating" value="4" />
+                                <BootstrapForm.Label htmlFor="first-rate4" title="Very good">4 stars</BootstrapForm.Label>
+                                <Field type="radio" id="first-rate5" name="rating" value="5" />
+                                <BootstrapForm.Label htmlFor="first-rate5" title="Amazing">5 stars</BootstrapForm.Label>
+                            </fieldset>
                             <ErrorMessage className="text-danger" name="rating" component="div" />
                         </div>
                         <div className="mb-3">
