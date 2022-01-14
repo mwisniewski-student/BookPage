@@ -6,7 +6,8 @@ import { Card, Row, Image, DropdownButton, Dropdown, Button, ButtonGroup, Offcan
 import { Link } from "react-router-dom";
 import { setBookRequestStatus } from "../../ducks/requestsStatus/actions";
 import { IoOptionsSharp } from 'react-icons/io5';
-import FilterBooksForm from './FilterBooksForm'
+import FilterBooksForm from './FilterBooksForm';
+import Pagination from "../Pagination";
 
 
 const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus }) => {
@@ -17,6 +18,8 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
     const [startBookList, setStartBookList] = useState([])
     const [displayedBooks, setDisplayedBooks] = useState([])
     const [sortedOption, setSortedOption] = useState('Alphabetically')
+    const [currentPage, setCurrentPage] = useState(1);
+    const booksPerPage = 5;
 
 
     const setStartingOptions = () => {
@@ -63,6 +66,12 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
     const handleCloseFilterCanvas = () => setShowFilterCanvas(false);
     const handleShowFilterCanvas = () => setShowFilterCanvas(true);
 
+    const indexOfLastBook = currentPage * booksPerPage;
+    const indexOfFirstBook = indexOfLastBook - booksPerPage;
+    const currentDisplayedBooks = displayedBooks.slice(indexOfFirstBook, indexOfLastBook);
+
+    const paginate = pageNumber => setCurrentPage(pageNumber);
+
     return (
         <div>
             <h3>Book list</h3>
@@ -84,13 +93,13 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <FilterBooksForm setDisplayedBooks={setDisplayedBooks} allBooks={startBookList}
-                        setCanvasShow={setShowFilterCanvas} setSortedOption={setSortedOption} />
+                        setCanvasShow={setShowFilterCanvas} setSortedOption={setSortedOption} paginate={paginate} />
                 </Offcanvas.Body>
             </Offcanvas>
 
 
             {
-                displayedBooks ? displayedBooks.map(book => {
+                currentDisplayedBooks ? currentDisplayedBooks.map(book => {
                     return (
                         <Card className="mb-3" key={book.id}>
                             <Row>
@@ -101,9 +110,9 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
                                     <Card.Body>
                                         <Card.Title>
                                             {book.title}
-                                            {book.categories.map((category, i) => <Badge className="ms-3" bg="secondary" key={i}>{category}</Badge>)}
                                         </Card.Title>
-                                        <Card.Text>{book.description}</Card.Text>
+                                        {book.categories.map((category, i) => <Badge className="me-2" bg="secondary" key={i}>{category}</Badge>)}
+                                        <Card.Text className="mt-2">{book.description}</Card.Text>
                                         <Card.Text><small className="text-muted">Pages: {book.numberOfPages}</small></Card.Text>
                                         <Card.Text><small className="text-muted">Published: {new Date(book.publishDate).toLocaleDateString()}</small></Card.Text>
                                         <Link className="btn btn-primary" to={`/books/${book.id}`}>Details</Link>
@@ -113,6 +122,11 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
                         </Card>)
                 }) : null
             }
+            <Pagination
+                itemsPerPage={booksPerPage}
+                totalItems={displayedBooks.length}
+                paginate={paginate}
+            />
         </div >
     )
 };

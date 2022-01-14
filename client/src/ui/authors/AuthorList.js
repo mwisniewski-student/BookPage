@@ -9,6 +9,7 @@ import { Card, Row, Image, DropdownButton, Dropdown, Button, ButtonGroup, Offcan
 import { setBookRequestStatus, setAuthorRequestStatus } from "../../ducks/requestsStatus/actions";
 import { IoOptionsSharp } from 'react-icons/io5';
 import FilterAuthorsForm from "./FilterAuthorsForm";
+import Pagination from "../Pagination";
 
 const AuthorList = ({ authors, getAuthorList, books, getBookList,
     authorRequestStatus, bookRequestStatus, setBookRequestStatus, setAuthorRequestStatus }) => {
@@ -24,7 +25,9 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
 
     const [startAuthorList, setStartAuthorList] = useState([])
     const [displayedAuthors, setDisplayedAuthors] = useState([])
-    const [sortedOption, setSortedOption] = useState('')
+    const [sortedOption, setSortedOption] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const authorsPerPage = 5;
 
 
     const setStartingOptions = () => {
@@ -74,6 +77,12 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
     const handleCloseFilterCanvas = () => setShowFilterCanvas(false);
     const handleShowFilterCanvas = () => setShowFilterCanvas(true);
 
+    const indexOfLastAuthor = currentPage * authorsPerPage;
+    const indexOfFirstAuthor = indexOfLastAuthor - authorsPerPage;
+    const currentDisplayedAuthors = displayedAuthors.slice(indexOfFirstAuthor, indexOfLastAuthor);
+
+    const paginate = pageNumber => setCurrentPage(pageNumber);
+
     return (
         <div>
             <h3>Author list</h3>
@@ -97,12 +106,12 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <FilterAuthorsForm setDisplayedAuthors={setDisplayedAuthors} allAuthors={startAuthorList}
-                        setCanvasShow={setShowFilterCanvas} setSortedOption={setSortedOption} />
+                        setCanvasShow={setShowFilterCanvas} setSortedOption={setSortedOption} paginate={paginate} />
                 </Offcanvas.Body>
             </Offcanvas>
 
             {
-                displayedAuthors.length ? displayedAuthors.map(author => {
+                currentDisplayedAuthors.length ? currentDisplayedAuthors.map(author => {
                     return (
                         <Card className="mb-3" key={author.id}>
                             <Row>
@@ -122,6 +131,11 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
                         </Card>)
                 }) : <div>No authors</div>
             }
+            <Pagination
+                itemsPerPage={authorsPerPage}
+                totalItems={displayedAuthors.length}
+                paginate={paginate}
+            />
         </div >
     )
 };

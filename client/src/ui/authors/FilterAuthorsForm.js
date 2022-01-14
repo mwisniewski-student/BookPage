@@ -1,7 +1,7 @@
 import { Formik, Form, Field } from "formik";
 import { Form as BootstrapForm, Button, Row, Col, ButtonGroup } from "react-bootstrap";
 
-const FilterAuthorsForm = ({ setDisplayedAuthors, allAuthors, setCanvasShow, setSortedOption }) => {
+const FilterAuthorsForm = ({ setDisplayedAuthors, allAuthors, setCanvasShow, setSortedOption, paginate }) => {
 
     const onSubmit = (values) => {
         const authors = [...allAuthors];
@@ -17,12 +17,14 @@ const FilterAuthorsForm = ({ setDisplayedAuthors, allAuthors, setCanvasShow, set
         setDisplayedAuthors([...filteredByBirthAge]);
         setCanvasShow(false);
         setSortedOption('Alphabetically');
+        paginate(1);
     }
 
     const handleResetFiltering = () => {
         setDisplayedAuthors([...allAuthors])
         setSortedOption('Alphabetically');
         setCanvasShow(false);
+        paginate(1);
     }
 
     return (

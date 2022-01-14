@@ -4,7 +4,7 @@ import { default as ReactSelect } from "react-select";
 import categories from "./helpers/categories";
 import SelectOption from "../SelectOption";
 
-const FilterBooksForm = ({ setDisplayedBooks, allBooks, setCanvasShow, setSortedOption }) => {
+const FilterBooksForm = ({ setDisplayedBooks, allBooks, setCanvasShow, setSortedOption, paginate }) => {
 
     const onSubmit = (values) => {
         const books = [...allBooks];
@@ -17,12 +17,14 @@ const FilterBooksForm = ({ setDisplayedBooks, allBooks, setCanvasShow, setSorted
         setDisplayedBooks([...filteredByCategory]);
         setCanvasShow(false);
         setSortedOption('Alphabetically');
+        paginate(1);
     }
 
     const handleResetFiltering = () => {
         setDisplayedBooks([...allBooks])
         setSortedOption('Alphabetically');
         setCanvasShow(false);
+        paginate(1);
     }
 
     const categoriesOptions = categories.map(category => ({ value: category, label: category }))
