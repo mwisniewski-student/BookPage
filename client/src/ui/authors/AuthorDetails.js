@@ -7,9 +7,10 @@ import { connect } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
+import PropTypes from 'prop-types'
 
 const AuthorDetails = ({ author, books, id,
-    getOneAuthor, getBooksByAuthorRequest, deleteAuthor }) => {
+    getOneAuthor, getBooksByAuthorRequest, deleteAuthor }, { t }) => {
     const [showConfirm, setShowConfirm] = useState(false);
     const handleClose = () => setShowConfirm(false);
     const handleShow = () => setShowConfirm(true);
@@ -32,15 +33,15 @@ const AuthorDetails = ({ author, books, id,
                                 <Card.Img variant="top" src={author.image} />
                                 <Card.Body>
                                     <Card.Title>{author.name}</Card.Title>
-                                    <Card.Text>{author.description || 'No description'}</Card.Text>
+                                    <Card.Text>{author.description || t('No description')}</Card.Text>
                                 </Card.Body>
                                 <ListGroup variant="flush">
-                                    <ListGroup.Item>Birth Date: {new Date(author.birthDate).toLocaleDateString()}</ListGroup.Item>
-                                    <ListGroup.Item className="text-muted">Number of Books: {books ? books.length : 0}</ListGroup.Item>
+                                    <ListGroup.Item>{t('Birth Date')}: {new Date(author.birthDate).toLocaleDateString()}</ListGroup.Item>
+                                    <ListGroup.Item className="text-muted">{t('Number of Books')}: {books ? books.length : 0}</ListGroup.Item>
                                 </ListGroup>
                                 <Card.Body>
-                                    <Link to={`/authors/${author.id}/edit`} className="btn btn-info">Edit</Link>
-                                    <Button variant="danger" className="mx-3" onClick={handleShow}>Delete</Button>
+                                    <Link to={`/authors/${author.id}/edit`} className="btn btn-info">{t('Edit')}</Link>
+                                    <Button variant="danger" className="mx-3" onClick={handleShow}>{t('Delete')}</Button>
                                     <Modal
                                         show={showConfirm}
                                         onHide={handleClose}
@@ -48,16 +49,17 @@ const AuthorDetails = ({ author, books, id,
                                         keyboard={false}
                                     >
                                         <Modal.Header closeButton>
-                                            <Modal.Title>Delete</Modal.Title>
+                                            <Modal.Title>{t('Delete')}</Modal.Title>
                                         </Modal.Header>
                                         <Modal.Body>
-                                            Are you sure you want to permanently delete this author and all of his books?
+                                            {t('Are you sure you want to permanently delete this author and all of his books?'
+                                            )}
                                         </Modal.Body>
                                         <Modal.Footer>
                                             <Button variant="secondary" onClick={handleClose}>
                                                 Close
                                             </Button>
-                                            <Button variant="danger" onClick={() => handleDelete(author)}>Delete</Button>
+                                            <Button variant="danger" onClick={() => handleDelete(author)}>{t('Delete')}</Button>
                                         </Modal.Footer>
                                     </Modal>
                                 </Card.Body>
@@ -66,7 +68,7 @@ const AuthorDetails = ({ author, books, id,
                                     <ListGroup variant="flush">
                                         {books.length !== 0 ? books.map(book => <ListGroup.Item key={book.id}>
                                             <Link to={`/books/${book.id}`}>{book.title}</Link>
-                                        </ListGroup.Item>) : <div>No books written</div>}
+                                        </ListGroup.Item>) : <div>{t('No books written')}</div>}
                                     </ListGroup>
                                 </Card.Body> : null}
                             </Card>
@@ -75,6 +77,10 @@ const AuthorDetails = ({ author, books, id,
             }
         </>
     )
+}
+
+AuthorDetails.contextTypes = {
+    t: PropTypes.func
 }
 
 const mapStateToProps = (state, props) => {

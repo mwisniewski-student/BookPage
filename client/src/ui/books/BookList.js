@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { connect } from "react-redux";
 import { getAllBooks } from "../../ducks/books/selectors";
 import { getBookList } from "../../ducks/books/operations";
@@ -8,16 +8,17 @@ import { setBookRequestStatus } from "../../ducks/requestsStatus/actions";
 import { IoOptionsSharp } from 'react-icons/io5';
 import FilterBooksForm from './FilterBooksForm';
 import Pagination from "../Pagination";
+import PropTypes from 'prop-types'
 
 
-const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus }) => {
+const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus }, { t }) => {
     useEffect(() => {
         !bookRequestStatus && getBookList() && setBookRequestStatus(true);
     }, [books]);
 
     const [startBookList, setStartBookList] = useState([])
     const [displayedBooks, setDisplayedBooks] = useState([])
-    const [sortedOption, setSortedOption] = useState('Alphabetically')
+    const [sortedOption, setSortedOption] = useState(t('Alphabetically'))
     const [currentPage, setCurrentPage] = useState(1);
     const booksPerPage = 5;
 
@@ -26,7 +27,7 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
         const booksSorted = [...books].sort((x, y) => x.title.toLowerCase().localeCompare(y.title.toLowerCase()))
         setStartBookList(booksSorted)
         setDisplayedBooks(booksSorted)
-        setSortedOption('Alphabetically')
+        setSortedOption(t('Alphabetically'))
     }
 
     useEffect(() => {
@@ -35,31 +36,31 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
 
     const sortByNumberOfPages = () => {
         setDisplayedBooks([...displayedBooks.sort((x, y) => y.numberOfPages - x.numberOfPages)])
-        setSortedOption('Number Of Pages')
+        setSortedOption(t('Number Of Pages'))
     }
 
     const sortByNumberOfPagesAscending = () => {
         setDisplayedBooks([...displayedBooks.sort((x, y) => x.numberOfPages - y.numberOfPages)])
-        setSortedOption('Number Of Pages(Ascending)')
+        setSortedOption(t('Number Of Pages(Ascending)'))
     }
 
     const sortAlphabetically = () => {
         setDisplayedBooks([...displayedBooks.sort((x, y) => x.title.toLowerCase().localeCompare(y.title.toLowerCase()))])
-        setSortedOption('Alphabetically')
+        setSortedOption(t('Alphabetically'))
     }
     const sortAlphabeticallyReverse = () => {
         setDisplayedBooks([...displayedBooks.sort((x, y) => y.title.toLowerCase().localeCompare(x.title.toLowerCase()))])
-        setSortedOption('Alphabetically(Reverse)')
+        setSortedOption(t('Alphabetically(Reverse)'))
     }
 
     const sortByPublishDate = () => {
         setDisplayedBooks([...displayedBooks.sort((x, y) => new Date(x.publishDate) - new Date(y.publishDate))])
-        setSortedOption("By Oldest")
+        setSortedOption(t("By Oldest"))
     }
 
     const sortByPublishDateReverse = () => {
         setDisplayedBooks([...displayedBooks.sort((x, y) => new Date(y.publishDate) - new Date(x.publishDate))])
-        setSortedOption("By Youngest")
+        setSortedOption(t("By Youngest"))
     }
 
     const [showFilterCanvas, setShowFilterCanvas] = useState(false);
@@ -74,16 +75,16 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
 
     return (
         <div>
-            <h3>Book list</h3>
+            <h3>{t("Book List")}</h3>
             <ButtonGroup aria-label="Filter or Sort" className="mb-3">
-                <Button variant="primary" onClick={handleShowFilterCanvas}><IoOptionsSharp size={25} />  Filter</Button>
-                <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title={`Sort: ${sortedOption}`}>
-                    <Dropdown.Item onClick={sortByNumberOfPages}>Number of pages</Dropdown.Item>
-                    <Dropdown.Item onClick={sortByNumberOfPagesAscending}>Number of pages(Ascending)</Dropdown.Item>
-                    <Dropdown.Item onClick={sortAlphabetically}>Alphabetically</Dropdown.Item>
-                    <Dropdown.Item onClick={sortAlphabeticallyReverse}>Alphabetically(Reverse)</Dropdown.Item>
-                    <Dropdown.Item onClick={sortByPublishDate}>By Oldest</Dropdown.Item>
-                    <Dropdown.Item onClick={sortByPublishDateReverse}>By Youngest</Dropdown.Item>
+                <Button variant="primary" onClick={handleShowFilterCanvas}><IoOptionsSharp size={25} />  {t('Filter')}</Button>
+                <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title={`${t('Sort')}: ${sortedOption}`}>
+                    <Dropdown.Item onClick={sortByNumberOfPages}>{t('Number Of Pages')}</Dropdown.Item>
+                    <Dropdown.Item onClick={sortByNumberOfPagesAscending}>{t('Number Of Pages(Ascending)')}</Dropdown.Item>
+                    <Dropdown.Item onClick={sortAlphabetically}>{t('Alphabetically')}</Dropdown.Item>
+                    <Dropdown.Item onClick={sortAlphabeticallyReverse}>{t('Alphabetically(Reverse)')}</Dropdown.Item>
+                    <Dropdown.Item onClick={sortByPublishDate}>{t('By Oldest')}</Dropdown.Item>
+                    <Dropdown.Item onClick={sortByPublishDateReverse}>{t('By Youngest')}</Dropdown.Item>
                 </DropdownButton>
             </ButtonGroup>
 
@@ -111,11 +112,11 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
                                         <Card.Title>
                                             {book.title}
                                         </Card.Title>
-                                        {book.categories.map((category, i) => <Badge className="me-2" bg="secondary" key={i}>{category}</Badge>)}
+                                        {book.categories.map((category, i) => <Badge className="me-2" bg="secondary" key={i}>{t(category)}</Badge>)}
                                         <Card.Text className="mt-2">{book.description}</Card.Text>
-                                        <Card.Text><small className="text-muted">Pages: {book.numberOfPages}</small></Card.Text>
-                                        <Card.Text><small className="text-muted">Published: {new Date(book.publishDate).toLocaleDateString()}</small></Card.Text>
-                                        <Link className="btn btn-primary" to={`/books/${book.id}`}>Details</Link>
+                                        <Card.Text><small className="text-muted">{t('Pages')}: {book.numberOfPages}</small></Card.Text>
+                                        <Card.Text><small className="text-muted">{t('Published')}: {new Date(book.publishDate).toLocaleDateString()}</small></Card.Text>
+                                        <Link className="btn btn-primary" to={`/books/${book.id}`}>{t('Details')}</Link>
                                     </Card.Body>
                                 </div>
                             </Row>
@@ -130,6 +131,12 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
         </div >
     )
 };
+
+BookList.contextTypes = {
+    t: PropTypes.func
+}
+
+
 const mapStateToProps = (state) => {
     return {
         books: getAllBooks(state),

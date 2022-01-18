@@ -3,8 +3,9 @@ import { useHistory } from "react-router";
 import AuthorForm from './AuthorForm';
 import { createAuthor } from '../../ducks/authors/operations';
 import { Row, Col } from "react-bootstrap";
+import PropTypes from 'prop-types'
 
-const AuthorAdd = ({ createAuthor }) => {
+const AuthorAdd = ({ createAuthor }, { t }) => {
     const history = useHistory()
     const initialValues = {
         name: '',
@@ -19,12 +20,16 @@ const AuthorAdd = ({ createAuthor }) => {
     };
     return (
         <Row>
-            <h1 className="text-center">Add Author</h1>
+            <h1 className="text-center">{t('Add Author')}</h1>
             <Col md={{ span: 6, offset: 3 }} >
                 <AuthorForm initialValues={initialValues} onSubmit={onSubmit} />
             </Col>
         </Row>
     )
+}
+
+AuthorAdd.contextTypes = {
+    t: PropTypes.func
 }
 
 const mapDispatchToProps = {

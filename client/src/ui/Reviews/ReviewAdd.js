@@ -2,8 +2,9 @@ import ReviewForm from "../Reviews/ReviewForm";
 import { createReview } from "../../ducks/reviews/operations";
 import { connect } from "react-redux";
 import { Modal } from "react-bootstrap";
+import PropTypes from 'prop-types'
 
-const ReviewAdd = ({ createReview, bookId, showConfirm, handleClose }) => {
+const ReviewAdd = ({ createReview, bookId, showConfirm, handleClose }, { t }) => {
     const initialValues = {
         rating: 0,
         body: ''
@@ -22,7 +23,7 @@ const ReviewAdd = ({ createReview, bookId, showConfirm, handleClose }) => {
                 keyboard={false}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Leave a Review</Modal.Title>
+                    <Modal.Title>{t('Leave a Review')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <ReviewForm initialValues={initialValues} onSubmit={onSubmit} />
@@ -30,6 +31,10 @@ const ReviewAdd = ({ createReview, bookId, showConfirm, handleClose }) => {
             </Modal>
         </>
     )
+}
+
+ReviewAdd.contextTypes = {
+    t: PropTypes.func
 }
 
 const mapStateToProps = (_state, props) => {

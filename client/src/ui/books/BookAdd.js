@@ -3,8 +3,9 @@ import { useHistory } from "react-router";
 import BookForm from './BookForm';
 import { createBook } from '../../ducks/books/operations';
 import { Row, Col } from "react-bootstrap";
+import PropTypes from 'prop-types'
 
-const BookAdd = ({ createBook }) => {
+const BookAdd = ({ createBook }, { t }) => {
     const history = useHistory()
     const initialValues = {
         title: '',
@@ -22,13 +23,18 @@ const BookAdd = ({ createBook }) => {
     };
     return (
         <Row>
-            <h1 className="text-center">Add book</h1>
+            <h1 className="text-center">{t('Add Book')}</h1>
             <Col md={{ span: 6, offset: 3 }} >
                 <BookForm initialValues={initialValues} onSubmit={onSubmit} />
             </Col>
         </Row>
     )
 }
+
+BookAdd.contextTypes = {
+    t: PropTypes.func
+}
+
 
 const mapDispatchToProps = {
     createBook

@@ -15,7 +15,6 @@ import Error from './ui/Error';
 import Loader from './ui/Loader';
 
 function App({ error, loading }) {
-
   return (
     <BrowserRouter>
       <div className="d-flex flex-column vh-100">

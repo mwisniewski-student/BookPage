@@ -1,12 +1,13 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from 'yup';
 import { Form as BootstrapForm, Button } from "react-bootstrap";
+import PropTypes from 'prop-types'
 
-const ReviewForm = ({ initialValues, onSubmit }) => {
+const ReviewForm = ({ initialValues, onSubmit }, { t }) => {
 
     const reviewSchema = Yup.object().shape({
         body: Yup.string(),
-        rating: Yup.number().min(1, 'Rating is required!').max(5).required()
+        rating: Yup.number().min(1, t('Rating is required!')).max(5).required()
     })
 
     return (
@@ -21,7 +22,7 @@ const ReviewForm = ({ initialValues, onSubmit }) => {
                     <Form className="mb-5">
                         <div className="mb-3">
                             <fieldset className="starability-basic">
-                                <legend>Rating:</legend>
+                                <legend>{t('Rating')}:</legend>
                                 <Field type="radio" id="no-rate" className="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
                                 <Field type="radio" id="first-rate1" name="rating" value="1" />
                                 <BootstrapForm.Label htmlFor="first-rate1" title="Terrible">1 star</BootstrapForm.Label>
@@ -41,11 +42,15 @@ const ReviewForm = ({ initialValues, onSubmit }) => {
                             <Field name="body" className="form-control" id="body" as="textarea" />
                             <ErrorMessage className="text-danger" name="body" component="div" />
                         </div>
-                        <Button variant="success" type="submit">Submit</Button>
+                        <Button variant="success" type="submit">{t('Submit')}</Button>
                     </Form>
                 </Formik>}
         </div>
     )
+}
+
+ReviewForm.contextTypes = {
+    t: PropTypes.func
 }
 
 export default ReviewForm

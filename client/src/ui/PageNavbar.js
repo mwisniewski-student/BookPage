@@ -1,7 +1,10 @@
-import { Navbar, Container, NavbarBrand, Nav } from "react-bootstrap";
+import { Navbar, Container, NavDropdown, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { setLanguage } from "redux-i18n"
+import { connect } from "react-redux";
+import PropTypes from 'prop-types'
 
-const PageNavbar = () => {
+const PageNavbar = ({ setLanguage }, { t }) => {
     return (
         <Navbar className="sticky-top navbar-dark bg-dark" expand="lg">
             <Container fluid>
@@ -12,11 +15,18 @@ const PageNavbar = () => {
                 </Navbar.Toggle>
                 <Navbar.Collapse id="basic-nabar-nav">
                     <Nav>
-                        <Link to="/authors" className="nav-link">Authors</Link >
+                        <Link to="/authors" className="nav-link">{t('Authors')}</Link >
                     </Nav>
                     <Nav className="ms-auto">
-                        <Link to="/books/add" className="nav-link">Add Book</Link >
-                        <Link to="/authors/add" className="nav-link">Add Author</Link >
+                        <NavDropdown
+                            title="Language"
+                            menuVariant="dark"
+                        >
+                            <NavDropdown.Item onClick={() => setLanguage('pl')}>{t('Polish')}</NavDropdown.Item>
+                            <NavDropdown.Item onClick={() => setLanguage('en')}>{t('English')}</NavDropdown.Item>
+                        </NavDropdown>
+                        <Link to="/books/add" className="nav-link">{t('Add Book')}</Link >
+                        <Link to="/authors/add" className="nav-link">{t('Add Author')}</Link >
                     </Nav>
                 </Navbar.Collapse>
             </Container>
@@ -24,4 +34,11 @@ const PageNavbar = () => {
     )
 }
 
-export default PageNavbar
+PageNavbar.contextTypes = {
+    t: PropTypes.func
+}
+
+const mapDispatchToProps = {
+    setLanguage
+}
+export default connect(undefined, mapDispatchToProps)(PageNavbar)

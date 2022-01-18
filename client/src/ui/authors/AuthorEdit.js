@@ -6,8 +6,9 @@ import { getAuthorById } from "../../ducks/authors/selectors"
 import { Row, Col } from "react-bootstrap";
 import { useEffect } from "react";
 import { getOneAuthor } from "../../ducks/authors/operations";
+import PropTypes from 'prop-types'
 
-const AuthorEdit = ({ updateAuthor, author, getOneAuthor, id }) => {
+const AuthorEdit = ({ updateAuthor, author, getOneAuthor, id }, { t }) => {
     const history = useHistory()
 
     useEffect(() => {
@@ -31,14 +32,18 @@ const AuthorEdit = ({ updateAuthor, author, getOneAuthor, id }) => {
             {
                 author ?
                     <Row>
-                        <h1 className="text-center">Edit Author</h1>
+                        <h1 className="text-center">{t('Edit Author')}</h1>
                         <Col md={{ span: 6, offset: 3 }} >
                             <AuthorForm initialValues={mapToInitialValues(author)} onSubmit={onSubmit} />
                         </Col>
-                    </Row> : <div>No author with given id</div>
+                    </Row> : <div>{t('No author with given id')}</div>
             }
         </>
     )
+}
+
+AuthorEdit.contextTypes = {
+    t: PropTypes.func
 }
 
 const mapStateToProps = (state, props) => {

@@ -10,9 +10,10 @@ import { setBookRequestStatus, setAuthorRequestStatus } from "../../ducks/reques
 import { IoOptionsSharp } from 'react-icons/io5';
 import FilterAuthorsForm from "./FilterAuthorsForm";
 import Pagination from "../Pagination";
+import PropTypes from 'prop-types'
 
 const AuthorList = ({ authors, getAuthorList, books, getBookList,
-    authorRequestStatus, bookRequestStatus, setBookRequestStatus, setAuthorRequestStatus }) => {
+    authorRequestStatus, bookRequestStatus, setBookRequestStatus, setAuthorRequestStatus }, { t }) => {
 
     useEffect(() => {
         !authorRequestStatus && getAuthorList() && setAuthorRequestStatus(true);
@@ -38,7 +39,7 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
             }))
         setStartAuthorList(authorsSortedAndMapped)
         setDisplayedAuthors(authorsSortedAndMapped)
-        setSortedOption('Alphabetically')
+        setSortedOption(t('Alphabetically'))
     }
     useEffect(() => {
         setStartingOptions()
@@ -46,31 +47,31 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
 
     const sortByNumberOfBooks = () => {
         setDisplayedAuthors([...displayedAuthors.sort((x, y) => getNumberOfBooks(y.id) - getNumberOfBooks(x.id))])
-        setSortedOption('Number Of Books')
+        setSortedOption(t('Number Of Books'))
     }
 
     const sortByNumberOfBooksAscending = () => {
         setDisplayedAuthors([...displayedAuthors.sort((x, y) => getNumberOfBooks(x.id) - getNumberOfBooks(y.id))])
-        setSortedOption('Number Of Books(Ascending)')
+        setSortedOption(t('Number Of Books(Ascending)'))
     }
 
     const sortAlphabetically = () => {
         setDisplayedAuthors([...displayedAuthors.sort((x, y) => x.name.toLowerCase().localeCompare(y.name.toLowerCase()))])
-        setSortedOption('Alphabetically')
+        setSortedOption(t('Alphabetically'))
     }
     const sortAlphabeticallyReverse = () => {
         setDisplayedAuthors([...displayedAuthors.sort((x, y) => y.name.toLowerCase().localeCompare(x.name.toLowerCase()))])
-        setSortedOption('Alphabetically(Reverse)')
+        setSortedOption(t('Alphabetically(Reverse)'))
     }
 
     const sortByBirthDate = () => {
         setDisplayedAuthors([...displayedAuthors.sort((x, y) => new Date(x.birthDate) - new Date(y.birthDate))])
-        setSortedOption("By Oldest")
+        setSortedOption(t("By Oldest"))
     }
 
     const sortByBirthDateReverse = () => {
         setDisplayedAuthors([...displayedAuthors.sort((x, y) => new Date(y.birthDate) - new Date(x.birthDate))])
-        setSortedOption("By Youngest")
+        setSortedOption(t("By Youngest"))
     }
 
     const [showFilterCanvas, setShowFilterCanvas] = useState(false);
@@ -85,24 +86,24 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
 
     return (
         <div>
-            <h3>Author list</h3>
+            <h3>{t('Author list')}</h3>
 
             <ButtonGroup aria-label="Filter or Sort" className="mb-3">
-                <Button variant="primary" onClick={handleShowFilterCanvas}><IoOptionsSharp size={25} />  Filter</Button>
-                <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title={`Sort: ${sortedOption}`}>
-                    <Dropdown.Item onClick={sortByNumberOfBooks}>Number of books</Dropdown.Item>
-                    <Dropdown.Item onClick={sortByNumberOfBooksAscending}>Number of books(Ascending)</Dropdown.Item>
-                    <Dropdown.Item onClick={sortAlphabetically}>Alphabetically</Dropdown.Item>
-                    <Dropdown.Item onClick={sortAlphabeticallyReverse}>Alphabetically(Reverse)</Dropdown.Item>
-                    <Dropdown.Item onClick={sortByBirthDate}>By Oldest</Dropdown.Item>
-                    <Dropdown.Item onClick={sortByBirthDateReverse}>By Youngest</Dropdown.Item>
+                <Button variant="primary" onClick={handleShowFilterCanvas}><IoOptionsSharp size={25} />  {t('Filter')}</Button>
+                <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title={`${t('Sort')}: ${sortedOption}`}>
+                    <Dropdown.Item onClick={sortByNumberOfBooks}>{t('Number of Books')}</Dropdown.Item>
+                    <Dropdown.Item onClick={sortByNumberOfBooksAscending}>{t('Number of Books(Ascending)')}</Dropdown.Item>
+                    <Dropdown.Item onClick={sortAlphabetically}>{t('Alphabetically')}</Dropdown.Item>
+                    <Dropdown.Item onClick={sortAlphabeticallyReverse}>{t('Alphabetically(Reverse)')}</Dropdown.Item>
+                    <Dropdown.Item onClick={sortByBirthDate}>{t('By Oldest')}</Dropdown.Item>
+                    <Dropdown.Item onClick={sortByBirthDateReverse}>{t('By Youngest')}</Dropdown.Item>
                 </DropdownButton>
             </ButtonGroup>
 
 
             <Offcanvas show={showFilterCanvas} onHide={handleCloseFilterCanvas}>
                 <Offcanvas.Header closeButton>
-                    <Offcanvas.Title><h1>Filter</h1></Offcanvas.Title>
+                    <Offcanvas.Title><h1>{t('Filter')}</h1></Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <FilterAuthorsForm setDisplayedAuthors={setDisplayedAuthors} allAuthors={startAuthorList}
@@ -122,14 +123,14 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
                                     <Card.Body>
                                         <Card.Title>{author.name}</Card.Title>
                                         <Card.Text>{author.description}</Card.Text>
-                                        <Card.Text><small className="text-muted">Number of books: {author.numberOfBooks}</small></Card.Text>
-                                        <Card.Text><small className="text-muted">Birth Date: {new Date(author.birthDate).toLocaleDateString()}</small></Card.Text>
-                                        <Link className="btn btn-primary" to={`/authors/${author.id}`}>Details</Link>
+                                        <Card.Text><small className="text-muted">{t('Number of Books')}: {author.numberOfBooks}</small></Card.Text>
+                                        <Card.Text><small className="text-muted">{t('Birth Date')}: {new Date(author.birthDate).toLocaleDateString()}</small></Card.Text>
+                                        <Link className="btn btn-primary" to={`/authors/${author.id}`}>{t('Details')}</Link>
                                     </Card.Body>
                                 </div>
                             </Row>
                         </Card>)
-                }) : <div>No authors</div>
+                }) : <div>{t('No Authors')}</div>
             }
             <Pagination
                 itemsPerPage={authorsPerPage}
@@ -139,6 +140,11 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
         </div >
     )
 };
+
+AuthorList.contextTypes = {
+    t: PropTypes.func
+}
+
 const mapStateToProps = (state) => {
     return {
         authors: getAllAuthors(state),

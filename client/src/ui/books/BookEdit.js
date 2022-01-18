@@ -8,8 +8,9 @@ import { getAuthorsByIds } from "../../ducks/authors/selectors";
 import { useEffect } from "react";
 import { getOneBook } from "../../ducks/books/operations";
 import { getBooksAuthors } from "../../ducks/books/operations";
+import PropTypes from 'prop-types'
 
-const BookEdit = ({ updateBook, book, authors, getOneBook, getBooksAuthors, id }) => {
+const BookEdit = ({ updateBook, book, authors, getOneBook, getBooksAuthors, id }, { t }) => {
     const history = useHistory()
 
     useEffect(() => {
@@ -39,14 +40,18 @@ const BookEdit = ({ updateBook, book, authors, getOneBook, getBooksAuthors, id }
             {
                 book ?
                     <Row>
-                        <h1 className="text-center">Edit Book</h1>
+                        <h1 className="text-center">{t('Edit Book')}</h1>
                         <Col md={{ span: 6, offset: 3 }} >
                             <BookForm initialValues={mapToInitialValues(book)} onSubmit={onSubmit} />
                         </Col>
-                    </Row> : <div>No book with given id</div>
+                    </Row> : <div>{t('No book with given id')}</div>
             }
         </>
     )
+}
+
+BookEdit.contextTypes = {
+    t: PropTypes.func
 }
 
 const mapStateToProps = (state, props) => {
