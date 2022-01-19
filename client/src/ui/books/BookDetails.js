@@ -43,12 +43,13 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
         }
     }, [book, authors]);
 
+    const avgRating = reviews.reduce((acc, curr, _, { length }) => acc + curr.rating / length, 0)
     return (
         <>
             {
                 book ?
                     <Row>
-                        <Col md={{ span: 6 }}>
+                        <Col md={{ span: 5 }}>
                             <Card className="mb-3">
                                 <Card.Img variant="top" src={book.image} />
                                 <Card.Body>
@@ -89,7 +90,7 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
                                     </Modal>
                                 </Card.Body>
                                 {authors ? <Card.Body>
-                                    <Card.Title>{authors.length > 1 ? "Authors" : "Author"}</Card.Title>
+                                    <Card.Title>{authors.length > 1 ? t("Authors") : t("Author")}</Card.Title>
                                     <ListGroup variant="flush">
                                         {authors.length !== 0 ? authors.map(author => <ListGroup.Item key={author.id}>
                                             <Link to={`/authors/${author.id}`}>{author.name}</Link>
@@ -98,7 +99,8 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
                                 </Card.Body> : null}
                             </Card>
                         </Col>
-                        <Col md={{ span: 6 }}>
+                        <Col md={{ span: 7 }}>
+                            <h1>{t('Rating')}: {avgRating || t('No rates')}</h1>
                             <Button variant="success" onClick={handleShowAddReview} className="mb-3">{t('Add Review')}</Button>
                             <ReviewAdd bookId={id} showConfirm={showConfirmAddReview} handleClose={handleCloseAddReview} />
                             {reviews.map(review => review ? <Card className="mb-3" key={review.id}>

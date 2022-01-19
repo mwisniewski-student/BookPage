@@ -105,7 +105,7 @@ const BookList = ({ books, getBookList, setBookRequestStatus, bookRequestStatus 
                         <Card className="mb-3" key={book.id}>
                             <Row>
                                 <div className="col-md-4">
-                                    <Image src={book.image} alt={book.title + " cover"} fluid />
+                                    <Image className="list-img" src={book.image} alt={book.title + " cover"} fluid />
                                 </div>
                                 <div className="col-md-8">
                                     <Card.Body>

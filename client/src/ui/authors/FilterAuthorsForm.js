@@ -11,7 +11,7 @@ const FilterAuthorsForm = ({ setDisplayedAuthors, allAuthors, setCanvasShow, set
         const filteredByBirthAge = values.birthAges.length ? filteredByBookNumberAuthors.filter(author => {
             const birthYear = new Date(author.birthDate).getFullYear();
             return values.birthAges.some(age => {
-                return age === "lt19" ? birthYear <= age * 100 : (birthYear > (age - 1) * 100 && birthYear <= age * 100)
+                return age === "lt19" ? birthYear <= 1800 : (birthYear > (age - 1) * 100 && birthYear <= age * 100)
             })
         }) : filteredByBookNumberAuthors
 

@@ -86,7 +86,9 @@ export const translations = {
         'Rating': 'Rating',
         'Polish': 'Polish',
         'English': 'English',
-        'Add Author': 'Add Author'
+        'Add Author': 'Add Author',
+        'No rates': 'No rates',
+        "Author": "Author"
     },
     "pl": {
         "Book List": "Lista Książek",
@@ -175,6 +177,8 @@ export const translations = {
         'Rating': 'Ocena',
         'Polish': 'Polski',
         'English': 'Angielski',
-        'Add Author': 'Dodaj Autora'
+        'Add Author': 'Dodaj Autora',
+        'No rates': 'Brak ocen',
+        "Author": "Autor"
     }
 }

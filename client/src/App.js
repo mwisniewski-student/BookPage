@@ -13,6 +13,7 @@ import BookAdd from './ui/books/BookAdd';
 import { connect } from 'react-redux';
 import Error from './ui/Error';
 import Loader from './ui/Loader';
+import './ui/stylesheets/main.css'
 
 function App({ error, loading }) {
   return (

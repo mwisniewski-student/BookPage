@@ -117,7 +117,7 @@ const AuthorList = ({ authors, getAuthorList, books, getBookList,
                         <Card className="mb-3" key={author.id}>
                             <Row>
                                 <div className="col-md-4">
-                                    <Image src={author.image} alt={author.name + " photo"} thumbnail />
+                                    <Image className="list-img" src={author.image} alt={author.name + " photo"} thumbnail />
                                 </div>
                                 <div className="col-md-8">
                                     <Card.Body>
