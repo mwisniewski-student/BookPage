@@ -43,7 +43,8 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
         }
     }, [book, authors]);
 
-    const avgRating = reviews.reduce((acc, curr, _, { length }) => acc + curr.rating / length, 0)
+    const avgRating = reviews.filter(review => review).reduce((acc, curr, _, { length }) => acc + curr.rating / length, 0)
+    
     return (
         <>
             {

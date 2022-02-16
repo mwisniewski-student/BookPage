@@ -34,7 +34,6 @@ function App({ error, loading }) {
                 <Route path="/authors/:id/edit" component={AuthorEdit} />
               </Switch>
             </main>}
-
         <Footer />
       </div>
     </BrowserRouter >
