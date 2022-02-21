@@ -1,7 +1,8 @@
 import { Row, Col, Card, ListGroup, Button, Modal } from "react-bootstrap";
 import { getBookById } from "../../ducks/books/selectors"
 import { getAuthorsByIds } from "../../ducks/authors/selectors";
-import { getOneBook, deleteBook, getBooksAuthors } from "../../ducks/books/operations"
+import { getAuthorsByBook } from "../../ducks/authors/operations";
+import { getOneBook, deleteBook } from "../../ducks/books/operations"
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -12,7 +13,7 @@ import { deleteReview } from "../../ducks/reviews/operations";
 import '../stylesheets/starability.css'
 import PropTypes from 'prop-types'
 
-const BookDetails = ({ book, authors, getBooksAuthors, id,
+const BookDetails = ({ book, authors, getAuthorsByBook, id,
     getOneBook, deleteBook, reviews, deleteReview }, { t }) => {
 
     const [showConfirmDeleteBook, setShowConfirmDeleteBook] = useState(false);
@@ -39,7 +40,7 @@ const BookDetails = ({ book, authors, getBooksAuthors, id,
             getOneBook(id)
         }
         if (!authors.length) {
-            getBooksAuthors(id)
+            getAuthorsByBook(id)
         }
     }, [book, authors]);
 
@@ -156,7 +157,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = {
     getOneBook,
-    getBooksAuthors,
+    getAuthorsByBook,
     deleteBook,
     deleteReview
 }

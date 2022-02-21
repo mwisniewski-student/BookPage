@@ -6,15 +6,16 @@ const initState = {
 }
 
 export const loadingReducer = (state = initState, action) => {
-    switch (action.type) {
-        case types.REQUEST:
-            return { ...state, loading: true }
-        case types.SUCCESS:
-            return { ...state, loading: false }
-        case types.FAILURE:
-            return { ...state, loading: false, error: action.payload };
-        default:
-            return state;
+
+    if(action.type.endsWith('_REQUEST')){
+        return { ...state, loading: true }
+    } 
+    if(action.type.endsWith('_SUCCESS')){
+        return { ...state, loading: false }
     }
+    if(action.type.endsWith('_FAILURE')){
+        return { ...state, loading: false, error: action.payload };
+    }
+    return state;
 }
 

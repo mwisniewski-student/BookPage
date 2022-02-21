@@ -6,6 +6,7 @@ const Review = require('../models/Review');
 
 const ExpressError = require('../utils/ExpressError');
 const catchAsync = require('../utils/catchAsync');
+const map_idToId = require('../utils/map_idToId');
 
 router.post('/', catchAsync(async (req, res) => {
     const book = await Book.findById(req.params.id).populate('reviews');
@@ -14,23 +15,22 @@ router.post('/', catchAsync(async (req, res) => {
     book.reviews.push(review);
     await review.save();
     await book.save();
-    const { _id, ...restBook } = book._doc
-    const reviews = book.reviews.map(x => {
-        const { _id, ...restReview } = x._doc;
-        return { id: _id, ...restReview }
-    })
-    restBook.reviews = reviews
-    res.send({ id: _id, ...restBook })
+    const bookMappedToResponseFormat = map_idToId(book._doc);
+    const reviews = book.reviews.map(book => map_idToId(book._doc))
+    bookMappedToResponseFormat.reviews = reviews
+    res.send(bookMappedToResponseFormat)
 }))
 
 router.delete('/:reviewId', catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
-    const res1 = await Book.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    if (!res1) throw new ExpressError("Book doesn\'t exist", 404)
-    const res2 = await Review.findByIdAndDelete(reviewId);
-    if (!res1) throw new ExpressError("Review doesn\'t exist", 404)
-    const { _id, ...rest } = res2._doc
-    res.send({ id: _id, ...rest })
+    const book = await Book.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }, { runValidators: true, new: true }).populate('reviews');
+    if (!book) throw new ExpressError("Book doesn\'t exist", 404)
+    const review = await Review.findByIdAndDelete(reviewId);
+    if (!review) throw new ExpressError("Review doesn\'t exist", 404)
+    const bookMappedToResponseFormat = map_idToId(book._doc);
+    const reviews = book.reviews.map(x => map_idToId(x._doc))
+    bookMappedToResponseFormat.reviews = reviews;
+    res.send(bookMappedToResponseFormat);
 }))
 
 module.exports = router;

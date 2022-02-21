@@ -14,4 +14,4 @@ const types = {
     GET_MANY
 }
 
-export default types
+export default types;

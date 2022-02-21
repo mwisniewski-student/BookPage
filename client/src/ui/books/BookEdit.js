@@ -5,17 +5,17 @@ import { updateBook } from '../../ducks/books/operations';
 import { getBookById } from "../../ducks/books/selectors"
 import { Row, Col } from "react-bootstrap";
 import { getAuthorsByIds } from "../../ducks/authors/selectors";
+import { getAuthorsByBook } from "../../ducks/authors/operations";
 import { useEffect } from "react";
 import { getOneBook } from "../../ducks/books/operations";
-import { getBooksAuthors } from "../../ducks/books/operations";
 import PropTypes from 'prop-types'
 
-const BookEdit = ({ updateBook, book, authors, getOneBook, getBooksAuthors, id }, { t }) => {
+const BookEdit = ({ updateBook, book, authors, getOneBook, getAuthorsByBook, id }, { t }) => {
     const history = useHistory()
 
     useEffect(() => {
         !book && getOneBook(id);
-        !authors.length && book && getBooksAuthors(id);
+        !authors.length && book && getAuthorsByBook(id);
     }, [book, authors]);
 
     const onSubmit = book => {
@@ -67,7 +67,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = {
     updateBook,
     getOneBook,
-    getBooksAuthors
+    getAuthorsByBook
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookEdit)

@@ -1,7 +1,8 @@
 import { createAction } from "redux-api-middleware";
 import { schema, normalize } from 'normalizr';
-import types from "../entities/types";
-import loadingTypes from "../loading/types";
+import types from "./types";
+import loadingTypes from "./loadingTypes";
+import { getReviewById } from "./selectors";
 
 const reviewSchema = new schema.Entity('reviews');
 const bookSchema = new schema.Entity('books', {
@@ -17,17 +18,17 @@ export const createReview = (bookId, reviewToAdd) => {
         },
         body: JSON.stringify(reviewToAdd),
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.CREATE_REVIEW_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.CREATE_REVIEW_SUCCESS,
                 payload: async (action, state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, bookSchema);
                     return entities;
                 },
-                meta: { actionType: types.CREATE }
+                meta: { actionType: types.CREATE_REVIEW}
             },
-            loadingTypes.FAILURE,
+            loadingTypes.CREATE_REVIEW_FAILURE,
         ]
     })
 }
@@ -40,17 +41,19 @@ export const deleteReview = (bookId, reviewId) => {
             'Content-Type': 'application/json'
         },
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.DELETE_REVIEW_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
-                payload: async (action, state, res) => {
+                type: loadingTypes.DELETE_REVIEW_SUCCESS,
+                payload: async (_action, state, res) => {
                     const json = await res.json();
-                    const { entities } = normalize(json, reviewSchema);
-                    return entities;
+                    console.log(json)
+                    const bookEntity = normalize(json, bookSchema).entities;
+                    const reviewEntity = normalize(getReviewById(state,reviewId),reviewSchema).entities;
+                    return { ...bookEntity, ...reviewEntity };
                 },
-                meta: { actionType: types.DELETE }
+                meta: { actionType: types.DELETE_REVIEW }
             },
-            loadingTypes.FAILURE,
+            loadingTypes.DELETE_REVIEW_FAILURE,
         ]
     })
 }

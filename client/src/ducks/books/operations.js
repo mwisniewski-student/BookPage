@@ -1,15 +1,13 @@
 import { createAction } from "redux-api-middleware";
 import { schema, normalize } from 'normalizr';
-import types from "../entities/types";
-import loadingTypes from "../loading/types";
+import types from "./types";
+import loadingTypes from "./loadingTypes";
 
 const reviewSchema = new schema.Entity('reviews');
 const bookSchema = new schema.Entity('books', {
     reviews: [reviewSchema]
 });
 const booksSchema = new schema.Array(bookSchema);
-const authorSchema = new schema.Entity('authors');
-const authorsSchema = new schema.Array(authorSchema);
 
 export const getBookList = () => {
     return createAction({
@@ -19,17 +17,17 @@ export const getBookList = () => {
             'Content-Type': 'application/json'
         },
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.GET_ALL_BOOKS_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.GET_ALL_BOOKS_SUCCESS,
                 payload: async (_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, booksSchema)
                     return entities;
                 },
-                meta: { actionType: types.GET_MANY }
+                meta: { actionType: types.GET_ALL_BOOKS }
             },
-            loadingTypes.FAILURE
+            loadingTypes.GET_ALL_BOOKS_FAILURE
         ]
     })
 }
@@ -42,17 +40,17 @@ export const getOneBook = id => {
             'Content-Type': 'application/json'
         },
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.GET_ONE_BOOK_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.GET_ONE_BOOK_SUCCESS,
                 payload: async (_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, bookSchema)
                     return entities;
                 },
-                meta: { actionType: types.GET_ONE }
+                meta: { actionType: types.GET_BOOKS }
             },
-            loadingTypes.FAILURE
+            loadingTypes.GET_ONE_BOOK_SUCCESS
         ]
     })
 }
@@ -65,40 +63,17 @@ export const getBooksByAuthorRequest = id => {
             'Content-Type': 'application/json'
         },
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.GET_BOOKS_BY_AUTHOR_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.GET_BOOKS_BY_AUTHOR_SUCCESS,
                 payload: async (_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, booksSchema)
                     return entities;
                 },
-                meta: { actionType: types.GET_MANY }
+                meta: { actionType: types.GET_BOOKS }
             },
-            loadingTypes.FAILURE
-        ]
-    })
-}
-
-export const getBooksAuthors = bookId => {
-    return createAction({
-        endpoint: `http://localhost:5000/books/${bookId}/authors`,
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        types: [
-            loadingTypes.REQUEST,
-            {
-                type: loadingTypes.SUCCESS,
-                payload: async (_action, _state, res) => {
-                    const json = await res.json();
-                    const { entities } = normalize(json, authorsSchema)
-                    return entities;
-                },
-                meta: { actionType: types.GET_MANY }
-            },
-            loadingTypes.FAILURE
+            loadingTypes.GET_BOOKS_BY_AUTHOR_FAILURE
         ]
     })
 }
@@ -112,17 +87,17 @@ export const createBook = bookToAdd => {
         },
         body: JSON.stringify(bookToAdd),
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.CREATE_BOOK_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.CREATE_BOOK_SUCCESS,
                 payload: async (action, state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, bookSchema);
                     return entities;
                 },
-                meta: { actionType: types.CREATE }
+                meta: { actionType: types.CREATE_BOOK }
             },
-            loadingTypes.FAILURE,
+            loadingTypes.CREATE_BOOK_FAILURE,
         ]
     })
 }
@@ -135,17 +110,17 @@ export const deleteBook = bookToDelete => {
             'Content-Type': 'application/json'
         },
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.DELETE_BOOK_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.DELETE_BOOK_SUCCESS,
                 payload: async (action, state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, bookSchema);
                     return entities;
                 },
-                meta: { actionType: types.DELETE }
+                meta: { actionType: types.DELETE_BOOK }
             },
-            loadingTypes.FAILURE,
+            loadingTypes.DELETE_BOOK_FAILURE,
         ]
     })
 }
@@ -159,17 +134,17 @@ export const updateBook = bookToUpdate => {
         },
         body: JSON.stringify(bookToUpdate),
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.UPDATE_BOOK_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.UPDATE_BOOK_SUCCESS,
                 payload: async (_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, bookSchema);
                     return entities;
                 },
-                meta: { actionType: types.UPDATE }
+                meta: { actionType: types.UPDATE_BOOK }
             },
-            loadingTypes.FAILURE,
+            loadingTypes.UPDATE_BOOK_FAILURE,
         ]
     })
 }

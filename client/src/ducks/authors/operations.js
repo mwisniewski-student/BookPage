@@ -1,13 +1,16 @@
 import { createAction } from "redux-api-middleware";
 import { schema, normalize } from 'normalizr';
-import types from "../entities/types";
-import loadingTypes from "../loading/types";
-import { getBooksByAuthor } from '../books/selectors'
+import types from "./types";
+import loadingTypes from "./loadingTypes";
+import { getBooksByAuthor } from '../books/selectors';
+import { getReviewsFromBook } from "../reviews/selectors";
 
 const authorSchema = new schema.Entity('authors');
 const authorsSchema = new schema.Array(authorSchema);
 const bookSchema = new schema.Entity('books');
-const booksSchema = new schema.Array(bookSchema)
+const booksSchema = new schema.Array(bookSchema);
+const reviewSchema = new schema.Entity('reviews');
+const reviewsSchema = new schema.Array(reviewSchema)
 
 export const getAuthorList = () => {
     return createAction({
@@ -17,17 +20,17 @@ export const getAuthorList = () => {
             'Content-Type': 'application/json'
         },
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.GET_ALL_AUTHORS_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.GET_ALL_AUTHORS_SUCCESS,
                 payload: async (_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, authorsSchema)
                     return entities;
                 },
-                meta: { actionType: types.GET_ALL }
+                meta: { actionType: types.GET_ALL_AUTHORS }
             },
-            loadingTypes.FAILURE
+            loadingTypes.GET_ALL_AUTHORS_FAILURE
         ]
     })
 }
@@ -41,17 +44,17 @@ export const getOneAuthor = id => {
             'Content-Type': 'application/json'
         },
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.GET_ONE_AUTHOR_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.GET_ONE_AUTHOR_SUCCESS,
                 payload: async (_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, authorSchema)
                     return entities;
                 },
-                meta: { actionType: types.GET_ONE }
+                meta: { actionType: types.GET_AUTHORS }
             },
-            loadingTypes.FAILURE
+            loadingTypes.GET_ONE_AUTHOR_FAILURE
         ]
     })
 }
@@ -65,17 +68,17 @@ export const createAuthor = authorToAdd => {
         },
         body: JSON.stringify(authorToAdd),
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.CREATE_AUTHOR_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.CREATE_AUTHOR_SUCCESS,
                 payload: async (action, state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, authorSchema);
                     return entities;
                 },
-                meta: { actionType: types.CREATE }
+                meta: { actionType: types.CREATE_AUTHOR }
             },
-            loadingTypes.FAILURE,
+            loadingTypes.CREATE_AUTHOR_FAILURE,
         ]
     })
 }
@@ -88,17 +91,20 @@ export const deleteAuthor = authorToDelete => {
             'Content-Type': 'application/json'
         },
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.DELETE_AUTHOR_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
-                payload: async (action, state, res) => {
-                    const bookEntities = normalize(getBooksByAuthor(state, authorToDelete.id), booksSchema).entities
+                type: loadingTypes.DELETE_AUTHOR_SUCCESS,
+                payload: async (_action, state, _res) => {
+                    const bookEntities = normalize(getBooksByAuthor(state, authorToDelete.id), booksSchema).entities;
                     const authorEntity = normalize(authorToDelete, authorSchema).entities;
-                    return { ...bookEntities, ...authorEntity };
+                    const bookIds = Object.keys(bookEntities).books ? Object.keys(bookEntities.books) : [];
+                    const reviews = bookIds.map(bookId => getReviewsFromBook(state,bookId)).flat();
+                    const reviewEntities = normalize(reviews,reviewsSchema).entities;
+                    return { ...bookEntities, ...authorEntity, ...reviewEntities };
                 },
-                meta: { actionType: types.DELETE }
+                meta: { actionType: types.DELETE_AUTHOR }
             },
-            loadingTypes.FAILURE,
+            loadingTypes.DELETE_AUTHOR_FAILURE,
         ]
     })
 }
@@ -112,17 +118,40 @@ export const updateAuthor = authorToUpdate => {
         },
         body: JSON.stringify(authorToUpdate),
         types: [
-            loadingTypes.REQUEST,
+            loadingTypes.UPDATE_AUTHOR_REQUEST,
             {
-                type: loadingTypes.SUCCESS,
+                type: loadingTypes.UPDATE_AUTHOR_SUCCESS,
                 payload: async (_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, authorSchema);
                     return entities;
                 },
-                meta: { actionType: types.UPDATE }
+                meta: { actionType: types.UPDATE_AUTHOR }
             },
-            loadingTypes.FAILURE,
+            loadingTypes.UPDATE_AUTHOR_FAILURE,
+        ]
+    })
+}
+
+export const getAuthorsByBook = bookId => {
+    return createAction({
+        endpoint: `http://localhost:5000/books/${bookId}/authors`,
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        types: [
+            loadingTypes.GET_AUTHORS_BY_BOOK_REQUEST,
+            {
+                type: loadingTypes.GET_AUTHORS_BY_BOOK_SUCCESS,
+                payload: async (_action, _state, res) => {
+                    const json = await res.json();
+                    const { entities } = normalize(json, authorsSchema)
+                    return entities;
+                },
+                meta: { actionType: types.GET_AUTHORS }
+            },
+            loadingTypes.GET_AUTHORS_BY_BOOK_FAILURE
         ]
     })
 }
