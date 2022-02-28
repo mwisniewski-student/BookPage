@@ -9,9 +9,11 @@ const bookSchema = new schema.Entity('books', {
 });
 const booksSchema = new schema.Array(bookSchema);
 
+const serverDomain = process.env.REACT_APP_SERVER_DOMAIN;
+
 export const getBookList = () => {
     return createAction({
-        endpoint: 'http://localhost:5000/books',
+        endpoint: serverDomain + '/books',
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -20,7 +22,7 @@ export const getBookList = () => {
             loadingTypes.GET_ALL_BOOKS_REQUEST,
             {
                 type: loadingTypes.GET_ALL_BOOKS_SUCCESS,
-                payload: async (_action, _state, res) => {
+                payload: async(_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, booksSchema)
                     return entities;
@@ -34,7 +36,7 @@ export const getBookList = () => {
 
 export const getOneBook = id => {
     return createAction({
-        endpoint: `http://localhost:5000/books/${id}`,
+        endpoint: serverDomain + `/books/${id}`,
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -43,7 +45,7 @@ export const getOneBook = id => {
             loadingTypes.GET_ONE_BOOK_REQUEST,
             {
                 type: loadingTypes.GET_ONE_BOOK_SUCCESS,
-                payload: async (_action, _state, res) => {
+                payload: async(_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, bookSchema)
                     return entities;
@@ -57,7 +59,7 @@ export const getOneBook = id => {
 
 export const getBooksByAuthorRequest = id => {
     return createAction({
-        endpoint: `http://localhost:5000/books/by-author/${id}`,
+        endpoint: serverDomain + `/books/by-author/${id}`,
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -66,7 +68,7 @@ export const getBooksByAuthorRequest = id => {
             loadingTypes.GET_BOOKS_BY_AUTHOR_REQUEST,
             {
                 type: loadingTypes.GET_BOOKS_BY_AUTHOR_SUCCESS,
-                payload: async (_action, _state, res) => {
+                payload: async(_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, booksSchema)
                     return entities;
@@ -80,7 +82,7 @@ export const getBooksByAuthorRequest = id => {
 
 export const createBook = bookToAdd => {
     return createAction({
-        endpoint: `http://localhost:5000/books`,
+        endpoint: serverDomain + `/books`,
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -90,7 +92,7 @@ export const createBook = bookToAdd => {
             loadingTypes.CREATE_BOOK_REQUEST,
             {
                 type: loadingTypes.CREATE_BOOK_SUCCESS,
-                payload: async (action, state, res) => {
+                payload: async(action, state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, bookSchema);
                     return entities;
@@ -104,7 +106,7 @@ export const createBook = bookToAdd => {
 
 export const deleteBook = bookToDelete => {
     return createAction({
-        endpoint: `http://localhost:5000/books/${bookToDelete.id}`,
+        endpoint: serverDomain + `/books/${bookToDelete.id}`,
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -113,7 +115,7 @@ export const deleteBook = bookToDelete => {
             loadingTypes.DELETE_BOOK_REQUEST,
             {
                 type: loadingTypes.DELETE_BOOK_SUCCESS,
-                payload: async (action, state, res) => {
+                payload: async(action, state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, bookSchema);
                     return entities;
@@ -127,7 +129,7 @@ export const deleteBook = bookToDelete => {
 
 export const updateBook = bookToUpdate => {
     return createAction({
-        endpoint: `http://localhost:5000/books/${bookToUpdate.id}`,
+        endpoint: serverDomain + `/books/${bookToUpdate.id}`,
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -137,7 +139,7 @@ export const updateBook = bookToUpdate => {
             loadingTypes.UPDATE_BOOK_REQUEST,
             {
                 type: loadingTypes.UPDATE_BOOK_SUCCESS,
-                payload: async (_action, _state, res) => {
+                payload: async(_action, _state, res) => {
                     const json = await res.json();
                     const { entities } = normalize(json, bookSchema);
                     return entities;
