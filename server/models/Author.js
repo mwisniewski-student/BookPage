@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const Book = require("./Book");
+const Review = require("./Review");
 
 const authorModel = new Schema({
   name: {
@@ -20,14 +20,6 @@ const authorModel = new Schema({
     type: Date,
     required: [true, "birthDate is required"],
   },
-});
-
-authorModel.post("findOneAndDelete", async (doc) => {
-  if (doc) {
-    await Book.deleteMany({
-      authorsIds: doc._id,
-    });
-  }
 });
 
 authorModel.virtual("id").get(function () {

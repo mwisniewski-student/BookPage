@@ -37,10 +37,13 @@ module.exports.updateAuthor = async (req, res) => {
 module.exports.deleteAuthor = async (req, res) => {
   const { id } = req.params;
   const authorDeleted = await Author.findByIdAndDelete(id);
-  if (authorDeleted) {
-    return res.send(authorDeleted);
+  if (!authorDeleted) {
+    throw new ExpressError("Author doesn't exist", 404);
   }
-  throw new ExpressError("Author doesn't exist", 404);
+  await Book.deleteMany({
+    authorsIds: authorDeleted,
+  });
+  res.send(authorDeleted);
 };
 
 module.exports.getAuthorByBook = async (req, res) => {
