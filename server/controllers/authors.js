@@ -1,17 +1,16 @@
 const Author = require("../models/Author");
 const Book = require("../models/Book");
 const ExpressError = require("../utils/ExpressError");
-const map_idToId = require("../utils/map_idToId");
 
 module.exports.createAuthor = async (req, res) => {
   const author = new Author(req.body);
   await author.save();
-  res.send(map_idToId(author._doc));
+  res.send(author);
 };
 
 module.exports.getAllAuthors = async (req, res) => {
   const authors = await Author.find();
-  res.send(authors.map((author) => map_idToId(author._doc)));
+  res.send(authors);
 };
 
 module.exports.getAuthorById = async (req, res) => {
@@ -23,7 +22,7 @@ module.exports.getAuthorById = async (req, res) => {
   if (!author) {
     throw new ExpressError("Author not found", 404);
   }
-  res.send(map_idToId(author._doc));
+  res.send(author);
 };
 
 module.exports.updateAuthor = async (req, res) => {
@@ -32,7 +31,7 @@ module.exports.updateAuthor = async (req, res) => {
     runValidators: true,
     new: true,
   });
-  res.send(map_idToId(author._doc));
+  res.send(author);
 };
 
 module.exports.deleteAuthor = async (req, res) => {
@@ -52,5 +51,5 @@ module.exports.getAuthorByBook = async (req, res) => {
   if (!authors.length) {
     throw new ExpressError("No authors found", 404);
   }
-  res.send(authors.map((author) => map_idToId(author._doc)));
+  res.send(authors);
 };

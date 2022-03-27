@@ -10,7 +10,7 @@ router
 
 router
   .route("/:id")
-  .get(books.getBookById)
+  .get(catchAsync(books.getBookById))
   .put(catchAsync(books.updateBook))
   .delete(catchAsync(books.deleteBook));
 
