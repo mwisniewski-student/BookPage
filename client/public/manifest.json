@@ -1,7 +1,13 @@
 {
   "short_name": "FD Project",
   "name": "Frontend Development Project 2020/2021",
-  "icons": [],
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
