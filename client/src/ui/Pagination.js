@@ -1,19 +1,38 @@
 import { Pagination as BootstrapPagination } from "react-bootstrap";
 
-const Pagination = ({ itemsPerPage, totalItems, paginate }) => {
-    const pageNumbers = Array.from({ length: Math.ceil(totalItems / itemsPerPage) }, (_, i) => i + 1);
+const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
+  const numberOfPages = Math.ceil(totalItems / itemsPerPage);
 
-    return (
-        <nav>
-            <BootstrapPagination className='justify-content-center'>
-                {pageNumbers.map(number => (
-                    <BootstrapPagination.Item key={number} onClick={() => paginate(number)}>
-                        {number}
-                    </BootstrapPagination.Item>
-                ))}
-            </BootstrapPagination>
-        </nav>
-    );
+  return (
+    <nav>
+      {numberOfPages ? (
+        <BootstrapPagination className="justify-content-center">
+          <BootstrapPagination.First key={1} onClick={() => paginate(1)} />
+          <BootstrapPagination.Prev
+            key={1}
+            onClick={() =>
+              paginate(currentPage > 1 ? currentPage - 1 : currentPage)
+            }
+          />
+          <BootstrapPagination.Item active>
+            {currentPage}
+          </BootstrapPagination.Item>
+          <BootstrapPagination.Next
+            key={2}
+            onClick={() =>
+              paginate(
+                currentPage < numberOfPages ? currentPage + 1 : currentPage
+              )
+            }
+          />
+          <BootstrapPagination.Last
+            key={3}
+            onClick={() => paginate(numberOfPages)}
+          />
+        </BootstrapPagination>
+      ) : null}
+    </nav>
+  );
 };
 
 export default Pagination;
