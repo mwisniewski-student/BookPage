@@ -9,7 +9,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
         <BootstrapPagination className="justify-content-center">
           <BootstrapPagination.First key={1} onClick={() => paginate(1)} />
           <BootstrapPagination.Prev
-            key={1}
+            key={2}
             onClick={() =>
               paginate(currentPage > 1 ? currentPage - 1 : currentPage)
             }
@@ -18,7 +18,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
             {currentPage}
           </BootstrapPagination.Item>
           <BootstrapPagination.Next
-            key={2}
+            key={3}
             onClick={() =>
               paginate(
                 currentPage < numberOfPages ? currentPage + 1 : currentPage
@@ -26,7 +26,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
             }
           />
           <BootstrapPagination.Last
-            key={3}
+            key={4}
             onClick={() => paginate(numberOfPages)}
           />
         </BootstrapPagination>
