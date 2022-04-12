@@ -13,15 +13,19 @@ const dbConnData = {
 
 const seedDb = async () => {
   await Author.deleteMany({});
-  authors.forEach(async (author) => {
-    const authorToSave = new Author(author);
-    await authorToSave.save();
-  });
+  await Promise.all(
+    authors.map(async (author) => {
+      const authorToSave = new Author(author);
+      return await authorToSave.save();
+    })
+  );
   await Book.deleteMany({});
-  books.forEach(async (book) => {
-    const bookToSave = new Book(book);
-    await bookToSave.save();
-  });
+  await Promise.all(
+    books.map(async (book) => {
+      const bookToSave = new Book(book);
+      return await bookToSave.save();
+    })
+  );
 };
 
 mongoose
@@ -34,6 +38,9 @@ mongoose
     );
     await seedDb();
     console.log("Data inserted");
+  })
+  .then(() => {
+    process.exit();
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB", error);

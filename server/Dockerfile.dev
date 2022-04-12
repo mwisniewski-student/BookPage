@@ -1,0 +1,16 @@
+FROM node:alpine
+
+WORKDIR /opt/app
+
+COPY ./package.json ./
+
+RUN npm install
+RUN npm run preinstall
+
+## Add the wait script to the image
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.8.0/wait /wait
+RUN chmod +x /wait
+
+COPY ./ ./
+
+CMD /wait  && npm run seed && npm run start
